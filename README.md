@@ -16,7 +16,7 @@ A lightweight Discord Rich Presence plugin that syncs and displays real-time Spo
 ## Prerequisites
 Before installing, ensure you have:
 - **Windows 10/11** (required for the installation scripts)
-- **more than 10IQ to use it (optional)
+- **more than 10IQ to use it** (optional)
 
 ## Installation 
 1. **Download** the latest release from the Releases tab.
