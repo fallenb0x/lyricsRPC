@@ -56,4 +56,3 @@ Ten projekt jest licencjonowany na warunkach licencji [GPL-3.0 License](LICENSE)
 - Uruchom terminal.
 - Przejdź do folderu z Vencordem (domyślnie "C:\Vencord") za pomocą komendy: `cd C:\Vencord`
 - Użyj komendy: `pnpm inject`
-- 
