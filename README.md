@@ -3,7 +3,7 @@
 </p>
 
 <h3 align="center">
-  <a href="#polski">🇵🇱 Polski</a> &bull; <a href="#english">🇬🇧 English</a>  
+  <a href="#polski">🇵🇱 Polski</a>
 </h3>
 
 ---
@@ -49,47 +49,3 @@ Aby usunąć wtyczkę, serwer działający w tle oraz wpisy w rejestrze autostar
 
 ## Licencja
 Ten projekt jest licencjonowany na warunkach licencji [GPL-3.0 License](LICENSE).
-
----
-
-<h1 id="english">LyricsRPC (English)</h1>
-A lightweight Discord Rich Presence plugin that synchronizes and displays real-time lyrics from Spotify directly on your profile.
-
-## Features
-- **Live Lyrics** — Displays the exact line of lyrics currently playing on Spotify, right on your Discord profile.
-- **Convenient Sync** — Any changes made in the web browser panel or Discord settings are instantly saved in both places.
-- **Cover Art or Custom Graphics** — Shows the original cover art from Spotify or your custom image/GIF from the internet.
-- **Countdown & Button** — Shows elapsed/remaining track time and adds a button allowing anyone to play the song immediately on Spotify.
-- **One-Click Installation** — Just run `INSTALL.bat` and the installer will automatically configure everything.
-- **Lightweight for Your PC** — Runs quietly in the background using minimal RAM and CPU resources.
-
-## Requirements
-Before installation, make sure you have:
-- **Windows 10/11** (required for installation scripts)
-- **more than 10 IQ to use this** (optional)
-
-## Installation
-1. **Download** the latest release.
-2. Run `INSTALL.bat`.
-3. After completion, open Discord:
-   - Go to **User Settings** ➔ **VENCORD** ➔ **Plugins**
-   - Search for **LyricsRPC** and turn it **ON**.
-4. Play any song on Spotify — your Discord profile will instantly start displaying synchronized lyrics in real time!
-
-## Customization
-Manage formats, toggle timestamps, buttons, or custom covers in real time using:
-- WebUI - **[http://localhost:8999](http://localhost:8999)**<br>
-or
-- Plugin settings - **User Settings** ➔ **VENCORD** ➔ **Plugins** ➔ **LyricsRPC**
-
-### Available Variables:
-- `{song_name}` — Song title
-- `{song_author}` — Artist name
-- `{lyrics}` — Current lyric line
-
-## Uninstallation
-To remove the plugin, background server, and startup registry entries:
-- Run `UNINSTALL.bat`
-
-## License
-This project is licensed under the [GPL-3.0 License](LICENSE).
