@@ -2,10 +2,6 @@
   <img src="preview.png" alt="LyricsRPC Preview" width="850">
 </p>
 
-<h3 align="center">
-  <a href="#polski">🇵🇱 Polski</a>
-</h3>
-
 ---
 
 <h1 id="polski">LyricsRPC (Polski)</h1>
