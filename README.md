@@ -25,7 +25,7 @@ Przed instalacją upewnij się, że masz:
 2. Uruchom `INSTALL.bat`.
 3. Po zakończeniu otwórz Discorda:
    - Przejdź do **Ustawienia użytkownika** ➔ **VENCORD** ➔ **Plugins**
-   - Wyszukaj **LyricsRPC** i włącz go (**ON**).
+   - Wyszukaj **LyricsRPC** i włącz go.
 4. Odtwórz dowolny utwór na Spotify — Twój profil Discord natychmiast zacznie wyświetlać zsynchronizowany tekst w czasie rzeczywistym!
 
 ## Zmiana wyglądu
