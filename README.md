@@ -18,9 +18,9 @@ Lekki plugin Discord Rich Presence, który synchronizuje i wyświetla teksty pio
 ## Wymagania
 Przed instalacją upewnij się, że masz:
 - **Windows 10/11** (wymagany dla skryptów instalacyjnych)
-- **Spotify** w wersji do pobrania ze strony spotify.com, nie microsoft store
-- **Discord** w wersji do pobrania ze strony discord.com, nie microsoft store
-- **więcej niż 10 IQ, żeby tego używać** (opcjonalnie)
+- **Spotify** w wersji do pobrania ze strony spotify.com, nie microsoft store.
+- **Discord** w wersji do pobrania ze strony discord.com, nie microsoft store.
+- **więcej niż 10 IQ, żeby tego używać**. (opcjonalnie)
 
 ## Instalacja 
 1. **Pobierz** najnowszą wersję.
