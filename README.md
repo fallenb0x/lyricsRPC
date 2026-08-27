@@ -45,3 +45,14 @@ Aby usunąć wtyczkę, serwer działający w tle oraz wpisy w rejestrze autostar
 
 ## Licencja
 Ten projekt jest licencjonowany na warunkach licencji [GPL-3.0 License](LICENSE).
+
+## FAQ (Frequently Asked Questions)
+
+**1. What if the plugin doesn't detect Spotify?**
+- Open the terminal.
+- Use the command: `spicetify apply`
+
+**2. What if Vencord disappears from Discord?**
+- Open the terminal.
+- Navigate to your Vencord folder (default is "C:\Vencord") by using the command: `cd C:\Vencord`
+- Use the command: `pnpm inject`
