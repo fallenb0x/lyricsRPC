@@ -34,7 +34,7 @@ Przed instalacją upewnij się, że masz:
 
 ## Zmiana wyglądu
 Zarządzaj formatami, przełączaj znaczniki czasu, przyciski lub własne okładki w czasie rzeczywistym za pomocą:
-- WebUI - **[http://localhost:8999](http://localhost:8999)**
+- WebUI - **[http://localhost:8999](http://localhost:8999)** <br>
 lub
 - Ustawienia w pluginie - **Ustawienia użytkownika** ➔ **VENCORD** ➔ **Plugins** ➔ **LyricsRPC**
 
