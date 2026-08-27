@@ -1,0 +1,43 @@
+{
+  "credentials": {
+    "token": "",
+    "cookies": "",
+    "clientID": "",
+    "clientSecret": "",
+    "useExternalAuthServer": false,
+    "uuid": "",
+    "customRedirectUri": "http://127.0.0.1:8999/callback",
+    "code": "",
+    "refreshToken": ""
+  },
+  "view": {
+    "timestamp": false,
+    "label": false,
+    "advanced": {
+      "enabled": false,
+      "customEmoji": "🎶",
+      "customStatus": "[{song_name}] [{lyrics}]"
+    }
+  },
+  "timings": {
+    "sendTimeOffset": 350,
+    "enableAutooffset": true,
+    "autooffset": 3
+  },
+  "update": {
+    "enableAutoupdate": false
+  },
+  "discord": {
+    "clientId": "1504970968513122434",
+    "enabled": true,
+    "showTimestamps": true,
+    "showButtons": true,
+    "showAlbumArt": true,
+    "customLargeImage": "",
+    "format": {
+      "name": "{song_name} - {lyrics}",
+      "details": "{song_name} - {song_author}",
+      "state": "{lyrics}"
+    }
+  }
+}
