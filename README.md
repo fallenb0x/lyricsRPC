@@ -78,7 +78,7 @@ Before installation, make sure you have:
 
 ## Customization
 Manage formats, toggle timestamps, buttons, or custom covers in real time using:
-- WebUI - **[http://localhost:8999](http://localhost:8999)**
+- WebUI - **[http://localhost:8999](http://localhost:8999)**<br>
 or
 - Plugin settings - **User Settings** ➔ **VENCORD** ➔ **Plugins** ➔ **LyricsRPC**
 
