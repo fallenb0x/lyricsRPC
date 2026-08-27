@@ -191,13 +191,24 @@ export function startServer(playbackState: PlaybackState): void {
         res.send("OK. You can close this page now.")
     })
 
-    const wsClients = new Set<any>()
+let lastDiscordSeen = 0
+let lastSpicetifySeen = 0
 
-    function getActivePayload(): RpcPayload {
-        const now = Date.now()
-        const spicetifyPayloadIsFresh = spicetifyRpcPayload && now - spicetifyRpcPayload.updatedAt < 5000
-        return (spicetifyPayloadIsFresh ? spicetifyRpcPayload : getPlaybackRpcPayload(playbackState)) || getPlaybackRpcPayload(playbackState)
-    }
+function getActivePayload(): RpcPayload {
+    const now = Date.now()
+    const spicetifyPayloadIsFresh = spicetifyRpcPayload && now - spicetifyRpcPayload.updatedAt < 5000
+    return (spicetifyPayloadIsFresh ? spicetifyRpcPayload : getPlaybackRpcPayload(playbackState)) || getPlaybackRpcPayload(playbackState)
+}
+
+function isDiscordOnline(): boolean {
+    return Date.now() - lastDiscordSeen < 3000
+}
+
+function isSpicetifyOnline(): boolean {
+    return Date.now() - lastSpicetifySeen < 5000
+}
+
+    const wsClients = new Set<any>()
 
     function broadcastWs(data: object) {
         const msg = JSON.stringify(data)
@@ -208,7 +219,20 @@ export function startServer(playbackState: PlaybackState): void {
         }
     }
 
+    setInterval(() => {
+        if (wsClients.size > 0) {
+            const discordOnline = isDiscordOnline()
+            const spicetifyOnline = isSpicetifyOnline()
+            broadcastWs({
+                type: "STATUS_UPDATE",
+                discord: { ready: discordOnline, connected: discordOnline },
+                spicetify: { ready: spicetifyOnline, connected: spicetifyOnline }
+            })
+        }
+    }, 1000)
+
     app.post("/rpc/spicetify", (req, res) => {
+        lastSpicetifySeen = Date.now()
         const payload = sanitizeSpicetifyPayload(req.body)
         if (!payload || (!payload.songName && payload.active)) return res.sendStatus(400)
 
@@ -259,7 +283,10 @@ export function startServer(playbackState: PlaybackState): void {
         }
     })
 
-    app.get("/rpc", (_req, res) => {
+    app.get("/rpc", (req, res) => {
+        if (req.headers["user-agent"]?.includes("Vencord") || req.query.source === "vencord" || !req.headers["sec-fetch-dest"]) {
+            lastDiscordSeen = Date.now()
+        }
         const payload = getActivePayload()
         res.json({
             ...payload,
@@ -289,9 +316,11 @@ export function startServer(playbackState: PlaybackState): void {
     })
 
     app.get("/api/status", (_req, res) => {
+        const discordOnline = isDiscordOnline()
         res.json({
             playback: getActivePayload(),
-            discord: { ready: true, connected: true },
+            discord: { ready: discordOnline, connected: discordOnline },
+            spicetify: { ready: isSpicetifyOnline(), connected: isSpicetifyOnline() },
             config: { discord: Settings.discord },
             settings: Settings
         })
@@ -349,10 +378,12 @@ export function startServer(playbackState: PlaybackState): void {
             } catch {}
         })
 
+        const discordOnline = isDiscordOnline()
         const initMsg = JSON.stringify({
             type: "INIT",
             playback: getActivePayload(),
-            discord: { ready: true, connected: true },
+            discord: { ready: discordOnline, connected: discordOnline },
+            spicetify: { ready: isSpicetifyOnline(), connected: isSpicetifyOnline() },
             config: {
                 discord: Settings.discord
             }

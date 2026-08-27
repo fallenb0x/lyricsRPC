@@ -54,6 +54,17 @@
         }
     }
 
+    function updateSpicetifyStatusUI(spicetify) {
+        const online = spicetify?.ready || spicetify?.connected || false;
+        if (online) {
+            elBadgeSpicetify.className = "badge badge-online";
+            elBadgeSpicetify.innerHTML = `<span class="dot"></span><span class="label">Spicetify: Aktywne</span>`;
+        } else {
+            elBadgeSpicetify.className = "badge badge-offline";
+            elBadgeSpicetify.innerHTML = `<span class="dot"></span><span class="label">Spicetify: Oczekiwanie</span>`;
+        }
+    }
+
     function applyFormat(format, p) {
         if (!format) return "";
         const effectiveLyrics = p.lyrics || (p.active ? "♪ (Brak tekstu)" : "");
@@ -175,12 +186,15 @@
                 const msg = JSON.parse(event.data);
                 if (msg.type === "INIT") {
                     updateDiscordStatusUI(msg.discord);
+                    if (msg.spicetify) updateSpicetifyStatusUI(msg.spicetify);
                     updatePlaybackUI(msg.playback);
                     populateConfigForm(msg.config);
                 } else if (msg.type === "PLAYBACK_UPDATE") {
                     updatePlaybackUI(msg.playback);
+                    updateSpicetifyStatusUI({ ready: true, connected: true });
                 } else if (msg.type === "STATUS_UPDATE") {
                     updateDiscordStatusUI(msg.discord);
+                    if (msg.spicetify) updateSpicetifyStatusUI(msg.spicetify);
                 } else if (msg.type === "CONFIG_UPDATE") {
                     populateConfigForm(msg.config);
                 }
@@ -189,6 +203,8 @@
 
         ws.onclose = () => {
             console.log("[WS] Disconnected, reconnecting in 2s...");
+            updateDiscordStatusUI({ ready: false, connected: false });
+            updateSpicetifyStatusUI({ ready: false, connected: false });
             setTimeout(connectWs, 2000);
         };
     }
@@ -200,8 +216,11 @@
                 const data = await res.json();
                 if (data.playback) updatePlaybackUI(data.playback);
                 if (data.discord) updateDiscordStatusUI(data.discord);
+                if (data.spicetify) updateSpicetifyStatusUI(data.spicetify);
             }
         } catch (e) {
+            updateDiscordStatusUI({ ready: false, connected: false });
+            updateSpicetifyStatusUI({ ready: false, connected: false });
             // fallback to /rpc directly
             try {
                 const res2 = await fetch("/rpc", { cache: "no-store" });

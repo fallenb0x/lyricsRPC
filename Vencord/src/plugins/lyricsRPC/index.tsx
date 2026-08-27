@@ -18,7 +18,7 @@ import { ApplicationAssetUtils, FluxDispatcher, React } from "@webpack/common";
 
 import { LyricsCard } from "./LyricsCard";
 
-const RPC_URL = "http://127.0.0.1:8999/rpc";
+const RPC_URL = "http://127.0.0.1:8999/rpc?source=vencord";
 const DEFAULT_APP_ID = "1504970968513122434";
 
 export type LyricsPayload = {
@@ -42,21 +42,21 @@ const ShowCurrentGame = getUserSettingLazy<boolean>("status", "showCurrentGame")
 export const settings = definePluginSettings({
     formatName: {
         type: OptionType.STRING,
-        description: "Format tytułu aktywności (\"Słucha...\")",
+        description: "Format tytułu aktywności (\"Słucha...\") — Zmienne: {song_name}, {song_author}, {lyrics}",
         default: "{song_name} - {lyrics}",
         placeholder: "{song_name} - {lyrics}",
         restartNeeded: false,
     },
     formatDetails: {
         type: OptionType.STRING,
-        description: "Format 1. linii (Details)",
+        description: "Format 1. linii (Details) — Zmienne: {song_name}, {song_author}, {lyrics}",
         default: "{song_name} - {song_author}",
         placeholder: "{song_name} - {song_author}",
         restartNeeded: false,
     },
     formatState: {
         type: OptionType.STRING,
-        description: "Format 2. linii (State)",
+        description: "Format 2. linii (State) — Zmienne: {song_name}, {song_author}, {lyrics}",
         default: "{lyrics}",
         placeholder: "{lyrics}",
         restartNeeded: false,

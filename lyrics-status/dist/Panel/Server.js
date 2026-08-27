@@ -153,12 +153,20 @@ function startServer(playbackState) {
         }
         res.send("OK. You can close this page now.");
     });
-    const wsClients = new Set();
+    let lastDiscordSeen = 0;
+    let lastSpicetifySeen = 0;
     function getActivePayload() {
         const now = Date.now();
         const spicetifyPayloadIsFresh = spicetifyRpcPayload && now - spicetifyRpcPayload.updatedAt < 5000;
         return (spicetifyPayloadIsFresh ? spicetifyRpcPayload : getPlaybackRpcPayload(playbackState)) || getPlaybackRpcPayload(playbackState);
     }
+    function isDiscordOnline() {
+        return Date.now() - lastDiscordSeen < 3000;
+    }
+    function isSpicetifyOnline() {
+        return Date.now() - lastSpicetifySeen < 5000;
+    }
+    const wsClients = new Set();
     function broadcastWs(data) {
         const msg = JSON.stringify(data);
         for (const client of wsClients) {
@@ -169,7 +177,19 @@ function startServer(playbackState) {
             catch (_a) { }
         }
     }
+    setInterval(() => {
+        if (wsClients.size > 0) {
+            const discordOnline = isDiscordOnline();
+            const spicetifyOnline = isSpicetifyOnline();
+            broadcastWs({
+                type: "STATUS_UPDATE",
+                discord: { ready: discordOnline, connected: discordOnline },
+                spicetify: { ready: spicetifyOnline, connected: spicetifyOnline }
+            });
+        }
+    }, 1000);
     app.post("/rpc/spicetify", (req, res) => {
+        lastSpicetifySeen = Date.now();
         const payload = sanitizeSpicetifyPayload(req.body);
         if (!payload || (!payload.songName && payload.active))
             return res.sendStatus(400);
@@ -215,7 +235,11 @@ function startServer(playbackState) {
             res.sendStatus(500);
         }
     }));
-    app.get("/rpc", (_req, res) => {
+    app.get("/rpc", (req, res) => {
+        var _a;
+        if (((_a = req.headers["user-agent"]) === null || _a === void 0 ? void 0 : _a.includes("Vencord")) || req.query.source === "vencord" || !req.headers["sec-fetch-dest"]) {
+            lastDiscordSeen = Date.now();
+        }
         const payload = getActivePayload();
         res.json(Object.assign(Object.assign({}, payload), { config: {
                 discord: Settings_1.Settings.discord,
@@ -238,9 +262,11 @@ function startServer(playbackState) {
         });
     });
     app.get("/api/status", (_req, res) => {
+        const discordOnline = isDiscordOnline();
         res.json({
             playback: getActivePayload(),
-            discord: { ready: true, connected: true },
+            discord: { ready: discordOnline, connected: discordOnline },
+            spicetify: { ready: isSpicetifyOnline(), connected: isSpicetifyOnline() },
             config: { discord: Settings_1.Settings.discord },
             settings: Settings_1.Settings
         });
@@ -289,10 +315,12 @@ function startServer(playbackState) {
             }
             catch (_a) { }
         });
+        const discordOnline = isDiscordOnline();
         const initMsg = JSON.stringify({
             type: "INIT",
             playback: getActivePayload(),
-            discord: { ready: true, connected: true },
+            discord: { ready: discordOnline, connected: discordOnline },
+            spicetify: { ready: isSpicetifyOnline(), connected: isSpicetifyOnline() },
             config: {
                 discord: Settings_1.Settings.discord
             }
