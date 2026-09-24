@@ -33,7 +33,7 @@ Lekka aplikacja Discord Rich Presence dla systemu Windows, synchronizująca teks
 
 ## Instalacja i Uruchomienie
 
-1. Pobierz i wypakuj **`LyricsRPC v0.2.1.zip`** z zakładki [Releases](../../releases).
+1. Pobierz i wypakuj **`LyricsRPC v0.2.1.zip`**
 2. Uruchom **`LyricsRPC.exe`**.
 3. W oknie programu wklej swój **Application ID** z Discord Developer Portal:
    - Wejdź na [Discord Developer Portal](https://discord.com/developers/applications).
