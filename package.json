@@ -6,7 +6,7 @@
   "bin": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "compile-bun": "bun build --compile --target=bun-windows-x64 src/index.ts --outfile build/LyricsRPC.exe",
+    "compile-bun": "bun build --compile --target=bun-windows-x64 src/index.ts --outfile build/LyricsRPC.exe && del /f /q .*.bun-build 2>nul || true",
     "compile-pkg": "pkg dist/index.js --targets node18-win-x64 --output build/LyricsRPC.exe"
   },
   "dependencies": {

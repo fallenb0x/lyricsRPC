@@ -26,7 +26,7 @@ const DEFAULT_SETTINGS: AppSettings = {
     openBrowserOnStart: true,
     minimizeToTray: true,
     discord: {
-        clientId: "1504970968513122434",
+        clientId: "",
         enabled: true,
         showTimestamps: true,
         showAlbumArt: true,

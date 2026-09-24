@@ -1,127 +1,60 @@
-# LyricsRPC
-
-Discord Rich Presence z **tekstem piosenki w czasie rzeczywistym** dla Spotify na Windows.
-
-Aplikacja czyta aktualnie odtwarzany utwór ze Spotify przez Windows Media Session (SMTC), pobiera tekst z LrcLib lub NetEase i wysyła go do Discorda przez bezpośrednie połączenie IPC — bez żadnych wtyczek ani rozszerzeń.
+<p align="center">
+  <img src="preview.png" alt="LyricsRPC Preview" width="850">
+</p>
 
 ---
+
+<h1 id="polski">LyricsRPC (Polski)</h1>
+Lekki plugin Discord Rich Presence, który synchronizuje i wyświetla teksty piosenek ze Spotify w czasie rzeczywistym na Twoim profilu.
+
+## Funkcje
+- **Teksty na żywo** — Wyświetla dokładną linijkę tekstu, która jest obecnie odtwarzana na Spotify, prosto na Twoim profilu Discord.
+- **Wygodna synchronizacja** — Cokolwiek zmienisz w panelu przeglądarki lub ustawieniach Discorda, jest natychmiast zapisywane w obu miejscach.
+- **Okładka lub własna grafika** — Pokazuje oryginalną okładkę ze Spotify lub Twój własny obraz/GIF z internetu.
+- **Odliczanie i Przycisk** — Pokazuje pozostały czas utworu i dodaje przycisk, dzięki któremu każdy może natychmiast odtworzyć piosenkę na Spotify.
+- **Instalacja jednym kliknięciem** — Wystarczy uruchomić `INSTALL.bat`, a instalator automatycznie skonfiguruje wszystko.
+- **Lekki dla Twojego PC** — Działa cicho w tle, zużywając minimalne zasoby RAM i CPU.
 
 ## Wymagania
+Przed instalacją upewnij się, że masz:
+- **Windows 10/11** (wymagany dla skryptów instalacyjnych)
+- **Spotify** w wersji do pobrania ze strony spotify.com, nie microsoft store.
+- **Discord** w wersji do pobrania ze strony discord.com, nie microsoft store.
+- **więcej niż 10 IQ, żeby tego używać**. (opcjonalnie)
 
-- **Windows 10/11**
-- **Discord** otwarty i zalogowany
-- **Spotify** (wersja desktopowa)
-- [Discord Application](https://discord.com/developers/applications) z własnym **Client ID**
+## Instalacja 
+1. **Pobierz** najnowszą wersję.
+2. Uruchom `INSTALL.bat`.
+3. Po zakończeniu otwórz Discorda:
+   - Przejdź do **Ustawienia użytkownika** ➔ **VENCORD** ➔ **Plugins**
+   - Wyszukaj **LyricsRPC** i włącz go.
+4. Odtwórz dowolny utwór na Spotify — Twój profil Discord natychmiast zacznie wyświetlać zsynchronizowany tekst w czasie rzeczywistym!
 
----
+## Zmiana wyglądu
+Zarządzaj formatami, przełączaj znaczniki czasu, przyciski lub własne okładki w czasie rzeczywistym za pomocą:
+- WebUI - **[http://localhost:8999](http://localhost:8999)** <br>
+lub
+- Ustawienia w pluginie - **Ustawienia użytkownika** ➔ **VENCORD** ➔ **Plugins** ➔ **LyricsRPC**
 
-## Szybki start (gotowy .exe)
+### Dostępne zmienne:
+- `{song_name}` — Tytuł utworu
+- `{song_author}` — Nazwa wykonawcy
+- `{lyrics}` — Aktualna linijka tekstu
 
-1. Pobierz `LyricsRPC.exe` z [Releases](../../releases)
-2. Skopiuj `settings.example.json` do `settings.json` i uzupełnij `clientId`
-3. Uruchom `LyricsRPC.exe`
-4. Dashboard dostępny na `http://localhost:8999`
-
----
-
-## Uruchomienie ze źródeł
-
-Wymagany [Bun](https://bun.sh):
-
-```bash
-# Instalacja zależności
-bun install
-
-# Uruchomienie bezpośrednio
-bun run src/index.ts
-
-# Kompilacja do .exe (Windows x64)
-bun run compile-bun
-# → build/LyricsRPC.exe
-```
-
----
-
-## Konfiguracja (`settings.json`)
-
-```json
-{
-  "port": 8999,
-  "openBrowserOnStart": true,
-  "discord": {
-    "clientId": "TWÓJ_CLIENT_ID",
-    "enabled": true,
-    "showTimestamps": true,
-    "showAlbumArt": true,
-    "customLargeImage": "",
-    "format": {
-      "name": "{song_name} - {lyrics}",
-      "details": "{song_name} - {song_author}",
-      "state": "{lyrics}"
-    }
-  }
-}
-```
-
-| Pole | Opis |
-|------|------|
-| `clientId` | ID aplikacji z Discord Developer Portal |
-| `showTimestamps` | Pasek postępu odtwarzania w Discordzie |
-| `showAlbumArt` | Okładka albumu jako duży obrazek (gdy brak `customLargeImage`) |
-| `customLargeImage` | Własny URL obrazka/GIF-a zamiast okładki |
-| `format.name` | Szablon linii **Name** aktywności (maks. 128 znaków) |
-| `format.details` | Szablon linii **Details** |
-| `format.state` | Szablon linii **State** — tu zwykle idzie tekst piosenki |
-
-Dostępne zmienne szablonów: `{song_name}`, `{song_author}`, `{lyrics}`
-
----
-
-## Struktura projektu
-
-```
-LyricsRPC/
-├── src/
-│   ├── index.ts                 # Główna logika aplikacji
-│   ├── DiscordIpc.ts            # Bezpośrednie połączenie Discord IPC (named pipe)
-│   ├── WindowsMediaWatcher.ts   # Odczyt metadanych Spotify przez SMTC (PowerShell)
-│   ├── LyricsManager.ts         # Pobieranie tekstu: LrcLib → NetEase (kaskada)
-│   ├── SettingsManager.ts       # Wczytywanie settings.json
-│   ├── WebServer.ts             # Dashboard HTTP + WebSocket
-│   └── Sources/
-│       └── BaseSource.ts        # Interfejs SongLyrics
-├── static/
-│   ├── index.html               # Dashboard WebUI
-│   └── app.js                   # Frontend dashboard
-├── settings.example.json        # Przykładowa konfiguracja
-├── package.json
-└── tsconfig.json
-```
-
----
-
-## Jak to działa
-
-```
-Spotify → Windows SMTC → PowerShell → WindowsMediaWatcher
-                                              ↓
-                                    LyricsManager (LrcLib / NetEase)
-                                              ↓
-                           Pętla 80ms → dispatchDiscordActivity
-                                              ↓
-                                    Discord IPC (named pipe)
-                                              ↓
-                                     Discord Rich Presence
-```
-
-1. **WindowsMediaWatcher** odpytuje Windows Media Session co 250ms przez PowerShell i zwraca tytuł, wykonawcę, pozycję i czas trwania.
-2. **LyricsManager** pobiera zsynchronizowany tekst (`.lrc`) z LrcLib, z fallbackiem na NetEase.
-3. Pętla 80ms wylicza aktualny wers i wysyła aktualizację do Discorda tylko gdy tekst się zmienił.
-4. **WebServer** serwuje dashboard (`http://localhost:8999`) i streamuje aktualizacje przez WebSocket.
-5. Gdy aplikacja jest już uruchomiona, kolejna instancja otwiera dashboard w przeglądarce i zamyka się.
-
----
+## Odinstalowywanie
+Aby usunąć wtyczkę, serwer działający w tle oraz wpisy w rejestrze autostartu:
+- Uruchom `UNINSTALL.bat`
 
 ## Licencja
+Ten projekt jest licencjonowany na warunkach licencji [GPL-3.0 License](LICENSE).
 
-MIT
+## FAQ (Często zadawane pytania)
+
+**1. Co jeśli plugin nie wykrywa Spotify?**
+- Uruchom terminal.
+- Użyj komendy: `spicetify apply`
+
+**2. Co jeśli Vencord zniknie z Discorda?**
+- Uruchom terminal.
+- Przejdź do folderu z Vencordem (domyślnie "C:\Vencord") za pomocą komendy: `cd C:\Vencord`
+- Użyj komendy: `pnpm inject`

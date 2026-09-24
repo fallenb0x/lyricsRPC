@@ -242,7 +242,7 @@
         const updatedConfig = {
             discord: {
                 ...currentConfig.discord,
-                clientId: (cfgClientId ? cfgClientId.value.trim() : "") || currentConfig.discord?.clientId || "1504970968513122434",
+                clientId: (cfgClientId ? cfgClientId.value.trim() : "") || currentConfig.discord?.clientId || "",
                 showTimestamps: cfgShowTimestamps ? cfgShowTimestamps.checked : true,
                 showAlbumArt: cfgShowAlbumArt ? cfgShowAlbumArt.checked : true,
                 customLargeImage: (cfgCustomLargeImage ? cfgCustomLargeImage.value.trim() : ""),
