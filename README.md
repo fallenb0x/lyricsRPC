@@ -23,7 +23,7 @@ Lekka aplikacja Discord Rich Presence dla systemu Windows, synchronizująca teks
 
 ## Wymagania
 
-- **Ponadprzeciętne IQ** (lub umiejętność czytania ze zrozumieniem)
+- Więcej niż **10 IQ** lub umiejętność czytania ze zrozumieniem
 - **Windows 10 / 11** (64-bit)
 - **Spotify** (wersja desktopowa)
 - **Discord** (wersja desktopowa)
