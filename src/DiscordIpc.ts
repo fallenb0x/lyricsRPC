@@ -89,6 +89,13 @@ export class DiscordIpcClient {
     private isConnecting = false;
 
     public connect(): void {
+        if (!this.clientId) {
+            this.connected = false;
+            this.ready = false;
+            this.currentUser = null;
+            this.notifyStatus();
+            return;
+        }
         if (this.reconnectTimer) {
             clearTimeout(this.reconnectTimer);
             this.reconnectTimer = null;
@@ -145,6 +152,7 @@ export class DiscordIpcClient {
     }
 
     private scheduleReconnect(): void {
+        if (!this.clientId) return;
         if (this.reconnectTimer) return;
         this.connected  = false;
         this.ready      = false;
