@@ -26,7 +26,7 @@ const DEFAULT_SETTINGS: AppSettings = {
     openBrowserOnStart: true,
     minimizeToTray: true,
     discord: {
-        clientId: "1504970968513122434",
+        clientId: "",
         enabled: true,
         showTimestamps: true,
         showAlbumArt: true,
@@ -83,9 +83,6 @@ export class SettingsManager {
                         }
                     }
                 };
-                if (!this.settings.discord.clientId || this.settings.discord.clientId === "YOUR_DISCORD_CLIENT_ID") {
-                    this.settings.discord.clientId = DEFAULT_SETTINGS.discord.clientId;
-                }
             } else {
                 this.save();
             }
