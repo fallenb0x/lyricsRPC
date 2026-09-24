@@ -50,24 +50,19 @@ export class LyricsRpcApp {
 
     public async start(): Promise<void> {
         console.log("╔═══════════════════════════════════════════════════════╗");
-        console.log("║           LyricsRPC Standalone Desktop App            ║");
-        console.log("║       Direct Discord IPC & Native Windows Spotify     ║");
+        console.log("║                       LyricsRPC                       ║");
         console.log("╚═══════════════════════════════════════════════════════╝\n");
 
-        // 1. Start WebServer first (acts as single instance lock)
         const port = this.settingsManager.settings.port || 8999;
         const serverStarted = await this.webServer.start(port);
         if (!serverStarted) {
-            // Duplicate instance - already handled and exiting
             return;
         }
 
-        // 2. Open browser on start if configured
         if (this.settingsManager.settings.openBrowserOnStart) {
             exec(`start http://localhost:${port}`);
         }
 
-        // 3. Connect to Discord IPC
         console.log("🔌 Connecting to Discord IPC...");
         this.discordIpc.connect();
 
@@ -82,12 +77,10 @@ export class LyricsRpcApp {
             }
         });
 
-        // 4. Start Native Windows Media Watcher (Detects Spotify automatically without any extensions)
         console.log("🎵 Starting native Windows Spotify media tracker...");
         this.mediaWatcher.onMediaChange((media) => this.handleNativeMediaUpdate(media));
         this.mediaWatcher.start();
 
-        // 5. Start main 80ms sweet-spot dispatch loop
         this.startDispatchLoop();
     }
 
@@ -127,7 +120,6 @@ export class LyricsRpcApp {
             this.currentLyrics = null;
             this.currentImageUrl = "";
 
-            // Fetch lyrics from online multi-source cascade
             this.lyricsManager.getLyrics(songName, songAuthor).then((lyrics) => {
                 if (this.currentLyricsKey === songKey) {
                     this.currentLyrics = lyrics;
@@ -140,7 +132,6 @@ export class LyricsRpcApp {
                 }
             });
 
-            // Fetch album cover from iTunes API
             this.lyricsManager.getArtwork(songName, songAuthor, media.albumTitle).then((artUrl) => {
                 if (this.currentLyricsKey === songKey && artUrl) {
                     this.currentImageUrl = artUrl;
@@ -154,7 +145,6 @@ export class LyricsRpcApp {
             });
         }
 
-        // Calculate current active lyric line based on progressMs
         const currentLyricLine = this.findActiveLyricLine(this.currentLyrics, media.positionMs);
 
         this.currentPlayback = {
@@ -202,7 +192,6 @@ export class LyricsRpcApp {
 
     private startDispatchLoop(): void {
         this.updateInterval = setInterval(() => {
-            // Smoothly advance progressMs and active lyric line between events
             if (this.lastNativeMedia && this.lastNativeMedia.status === "Playing") {
                 const elapsed = Date.now() - this.lastNativeMedia.updatedAt;
                 const approxPos = this.lastNativeMedia.positionMs + elapsed;
@@ -253,7 +242,6 @@ export class LyricsRpcApp {
             largeImage = p.imageUrl;
         }
 
-        // Calculate a stable timestamp anchored to when the song actually started
         let startTs: number | undefined;
         let endTs: number | undefined;
 
@@ -264,7 +252,6 @@ export class LyricsRpcApp {
             endTs = Math.floor(startTs + p.durationMs);
         }
 
-        // Signature depends only on text, cover, and song identity - NOT on ticking time!
         const signature = JSON.stringify([
             nameStr,
             detailsStr,
@@ -282,7 +269,7 @@ export class LyricsRpcApp {
         this.lastDispatchedSignature = signature;
 
         const activity: DiscordActivity = {
-            type: 2, // 2 = LISTENING ("Słucha")
+            type: 2,
             name: nameStr.slice(0, 128),
             details: detailsStr.slice(0, 128),
             state: stateStr.slice(0, 128),
@@ -310,7 +297,6 @@ process.on("unhandledRejection", (reason) => {
     console.error("⚠️ Nieobsłużone odrzucenie obietnicy (unhandledRejection):", reason);
 });
 
-// Entrypoint
 const app = new LyricsRpcApp();
 app.start().catch((err) => {
     console.error("Fatal error starting LyricsRPC:", err);

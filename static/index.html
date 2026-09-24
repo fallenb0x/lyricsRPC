@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lyrics RPC - Discord Rich Presence</title>
+    <title>Lyrics RPC</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,13 +11,11 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
         <header class="header">
             <div class="logo-group">
-                <div class="logo-icon">🎵</div>
+                <div class="logo-icon"><img src=logo.png alt="logo" width="50" height="50"></div>
                 <div class="logo-text">
                     <h1>Lyrics <span>RPC</span></h1>
-                    <p class="subtitle">Spotify Real-Time Lyrics Synchronizer</p>
                 </div>
             </div>
             <div class="status-badges">
@@ -32,11 +30,9 @@
             </div>
         </header>
 
-        <!-- Main Grid -->
         <main class="dashboard-grid">
-            <!-- Left Column: Live Player & Discord Preview -->
             <section class="card live-card">
-                <h2 class="card-title"><span>📻</span> Odtwarzacz & Tekst na żywo</h2>
+                <h2 class="card-title"> Odtwarzacz & Tekst na żywo</h2>
 
                 <div class="now-playing">
                     <div class="cover-wrapper">
@@ -59,18 +55,16 @@
                     </div>
                 </div>
 
-                <!-- Live Lyric Display Box -->
                 <div class="lyrics-box">
                     <div class="lyrics-header">
                         <span>Aktualny wers tekstu:</span>
                         <span id="lyrics-source-badge" class="source-tag">źródło: brak</span>
                     </div>
                     <div id="lyrics-current" class="lyrics-text">
-                        ♪ Czekam na tekst piosenki...
+                        ♪ coś się, coś się popsuło i nie ma tekstu :3
                     </div>
                 </div>
 
-                <!-- Discord Activity Preview -->
                 <div class="discord-preview-container">
                     <h3 class="preview-title">Podgląd Aktywności na Profilu Discord</h3>
                     <div class="discord-card">
@@ -92,24 +86,23 @@
                 </div>
             </section>
 
-            <!-- Right Column: Settings & Quick Actions -->
             <section class="card settings-card">
-                <h2 class="card-title"><span>⚙️</span> Konfiguracja</h2>
+                <h2 class="card-title">Ustawienia</h2>
 
                 <form id="config-form" class="config-form">
                     <div class="form-group">
-                        <label for="cfg-format-name">Format Tytułu Aktywności ("Słucha...")</label>
+                        <label for="cfg-format-name">Tytułu Aktywności</label>
                         <input type="text" id="cfg-format-name" value="{song_name} - {lyrics}">
                         <small>Zmienne: <code>{song_name}</code>, <code>{song_author}</code>, <code>{lyrics}</code></small>
                     </div>
 
                     <div class="form-group">
-                        <label for="cfg-format-details">Format 1. linii (Szczegóły / Details)</label>
+                        <label for="cfg-format-details">1. Linia</label>
                         <input type="text" id="cfg-format-details" value="{song_name} - {song_author}">
                     </div>
 
                     <div class="form-group">
-                        <label for="cfg-format-state">Format 2. linii (Stan / State)</label>
+                        <label for="cfg-format-state">2. Linia</label>
                         <input type="text" id="cfg-format-state" value="{lyrics}">
                     </div>
 
@@ -118,7 +111,7 @@
                             <input type="checkbox" id="cfg-show-timestamps" checked>
                             <span class="slider"></span>
                         </label>
-                        <span class="toggle-label">Pokaż licznik czasu w Discord</span>
+                        <span class="toggle-label">Pokaż licznik czasu</span>
                     </div>
 
                     <div class="form-group-toggle">
@@ -126,19 +119,19 @@
                             <input type="checkbox" id="cfg-show-album-art" checked>
                             <span class="slider"></span>
                         </label>
-                        <span class="toggle-label">Pokaż okładkę albumu jako duży obraz</span>
+                        <span class="toggle-label">Pokaż okładkę albumu</span>
                     </div>
 
                     <div class="form-group">
-                        <label for="cfg-custom-large-image">Własny URL dużego obrazu (opcjonalne)</label>
+                        <label for="cfg-custom-large-image">Własny URL obrazu (opcjonalne)</label>
                         <input type="text" id="cfg-custom-large-image" placeholder="https://i.imgur.com/przykład.gif">
-                        <small>Zostaw puste, aby używać automatycznej okładki albumu.</small>
+                        <small>Zostaw puste, aby używać okładki albumu.</small>
                     </div>
 
                     <div class="form-group">
                         <label for="cfg-client-id">Discord Application Client ID</label>
-                        <input type="text" id="cfg-client-id" value="" placeholder="np. 1234567890123456789">
-                        <small>ID aplikacji Discord wyświetlającej obecność (domyślnie: Spotify / LyricsRPC).</small>
+                        <input type="text" id="cfg-client-id" value="" placeholder="1927483629182038475">
+                        <small><a href="https://discord.com/developers/home" style="color: var(--text-muted)">tu możesz stworzyć aplikację discord</a>.</small>
                     </div>
 
                     <div class="actions-group">

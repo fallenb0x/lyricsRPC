@@ -1,8 +1,6 @@
 import net from "net";
 import crypto from "crypto";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 export interface DiscordActivity {
     type?: number;
     name?: string;
@@ -18,7 +16,6 @@ export interface DiscordActivity {
     buttons?: { label: string; url: string }[];
 }
 
-// Opcodes — exactly as defined in Lachee's DiscordRPC library
 enum Opcode {
     Handshake = 0,
     Frame     = 1,
@@ -27,7 +24,6 @@ enum Opcode {
     Pong      = 4,
 }
 
-// ─── Client ───────────────────────────────────────────────────────────────────
 
 export class DiscordIpcClient {
     private clientId: string;
@@ -36,7 +32,6 @@ export class DiscordIpcClient {
     private ready = false;
     private reconnectTimer: NodeJS.Timeout | null = null;
 
-    // Buffer accumulation — Lachee pattern: keep leftover bytes between chunks
     private recvBuffer = Buffer.alloc(0);
 
     private onReadyCallback?: (user: any) => void;
@@ -46,8 +41,6 @@ export class DiscordIpcClient {
     constructor(clientId: string) {
         this.clientId = clientId;
     }
-
-    // ── Public API ────────────────────────────────────────────────────────────
 
     public updateClientId(newId: string): void {
         if (!newId || newId === this.clientId) return;
@@ -95,9 +88,6 @@ export class DiscordIpcClient {
         this.tryPipe(0);
     }
 
-    // ── Connection ────────────────────────────────────────────────────────────
-
-    /** Try discord-ipc-0 … discord-ipc-9 in sequence, same as Lachee does */
     private tryPipe(index: number): void {
         if (index > 9) {
             this.isConnecting = false;
@@ -123,7 +113,6 @@ export class DiscordIpcClient {
 
         sock.once("error", () => {
             if (!isEstablished) {
-                // Pipe didn't exist — try next pipe
                 sock.destroy();
                 this.tryPipe(index + 1);
             } else {
@@ -158,14 +147,6 @@ export class DiscordIpcClient {
         }, 3000);
     }
 
-    // ── Packet I/O  (Lachee-identical framing) ────────────────────────────────
-
-    /**
-     * Wire format (same as Lachee's ManagedNamedPipeClient):
-     *   [4 bytes LE] opcode
-     *   [4 bytes LE] payload length
-     *   [N bytes]    UTF-8 JSON payload
-     */
     private sendPacket(opcode: Opcode, payload: object): void {
         if (!this.socket || !this.connected) return;
         try {
@@ -186,21 +167,18 @@ export class DiscordIpcClient {
         this.sendPacket(Opcode.Frame, payload);
     }
 
-    // ── Receive — Lachee accumulates leftovers between .data events ───────────
 
     private onData(chunk: Buffer): void {
-        // Append new chunk to leftover buffer
         this.recvBuffer = Buffer.concat([this.recvBuffer, chunk]);
 
-        // Drain as many complete packets as possible
         while (this.recvBuffer.length >= 8) {
             const opcode  = this.recvBuffer.readInt32LE(0);
             const length  = this.recvBuffer.readInt32LE(4);
 
-            if (this.recvBuffer.length < 8 + length) break; // wait for more data
+            if (this.recvBuffer.length < 8 + length) break;
 
             const jsonBuf  = this.recvBuffer.subarray(8, 8 + length);
-            this.recvBuffer = this.recvBuffer.subarray(8 + length);  // consume
+            this.recvBuffer = this.recvBuffer.subarray(8 + length);
 
             try {
                 const body = JSON.parse(jsonBuf.toString("utf8"));
@@ -218,7 +196,6 @@ export class DiscordIpcClient {
                 this.scheduleReconnect();
                 break;
             case Opcode.Ping:
-                // Lachee replies with Pong
                 this.sendPacket(Opcode.Pong, body);
                 break;
         }
@@ -240,7 +217,6 @@ export class DiscordIpcClient {
         }
     }
 
-    // ── Status notification (deduplicated, same as Lachee) ───────────────────
 
     private lastNotifiedState = "";
     private notifyStatus(): void {

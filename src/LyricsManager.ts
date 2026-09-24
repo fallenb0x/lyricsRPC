@@ -24,7 +24,6 @@ export class LyricsManager {
             try { fs.mkdirSync(this.cacheDir, { recursive: true }); } catch {}
         }
 
-        // Add source cascade
         this.sources.push(new LrcLibSource());
         this.sources.push(new NetEaseSource());
     }
@@ -83,7 +82,6 @@ export class LyricsManager {
         const cleanName = name.replace(/\s*\(.*?\)\s*/g, " ").trim();
         const cleanArtist = artist.split(",")[0].trim();
 
-        // 1. Try Deezer Search (Very fast, accurate for international & Polish albums, high resolution 1000x1000)
         const deezerQueries: string[] = [];
         if (albumTitle) {
             deezerQueries.push(`${cleanArtist} ${cleanName} ${albumTitle}`.trim());
@@ -115,7 +113,6 @@ export class LyricsManager {
             } catch {}
         }
 
-        // 2. Try Spotify Scraper via DuckDuckGo & Spotify oEmbed
         const spotifyQueries: string[] = [];
         if (albumTitle) {
             spotifyQueries.push(`site:open.spotify.com/album "${cleanArtist}" "${albumTitle}"`);
@@ -165,7 +162,6 @@ export class LyricsManager {
             } catch {}
         }
 
-        // 3. Try iTunes Fallback
         const itunesQueries: string[] = [];
         if (albumTitle) {
             itunesQueries.push(`${cleanName} ${cleanArtist} ${albumTitle}`.trim());

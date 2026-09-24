@@ -454,7 +454,6 @@ $(`
     </style>
 </div>
 `).appendTo(document.body);
-// HTML and CSS
 
 let menu                    = $("#menu-UI"),
     userTokenInput          = $("#user-token"),
@@ -479,7 +478,6 @@ let menu                    = $("#menu-UI"),
     autooffset              = $("#autooffset"),
     autooffsetHelp          = $("#autooffset-help"),
     enableAutoupdate        = $("#enable-autoupdate");
-// Elements
 
 let settings = {
     credentials: {
@@ -509,10 +507,8 @@ let settings = {
         enableAutoupdate: true
     }
 }
-// Settings
 
 let settingsLoaded = false;
-// Misc, in-session variables
 
 $(".tab-button").each((i, tab) => {
     tab = $(tab);
@@ -686,7 +682,6 @@ enableAutoupdate.click(() => {
     settings.update.enableAutoupdate = state;
     saveSettings();
 })
-// Events
 
 function formatSeconds(s) {
     return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0' ) + s;
@@ -763,11 +758,9 @@ function modal(title, description, styles = {}) {
         e.parentNode.parentNode === modalWindow[0] ? $(e).click(() => { modalWindow.remove(); }) : null;
     }
 }
-// Util functions
 
 const ws = new WebSocket("ws://localhost:8999/ws")
 
 ws.onmessage = (message) => {
     loadSettings(message.data)
 }
-// Init

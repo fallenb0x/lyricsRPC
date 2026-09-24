@@ -42,24 +42,34 @@
     const elBadgeDiscordLabel = elBadgeDiscord ? elBadgeDiscord.querySelector(".label") : null;
     const elBadgeSpicetifyLabel = elBadgeSpicetify ? elBadgeSpicetify.querySelector(".label") : null;
 
-    function updateDiscordStatusUI(discord) {
-        currentDiscord = discord || {};
-        let className = "badge badge-offline";
-        let text = "Discord: Rozłączono";
 
-        if (currentDiscord.ready) {
-            className = "badge badge-online";
-            text = `Discord: ${currentDiscord.user?.username || "Połączono"}`;
-        } else if (currentDiscord.connected) {
-            className = "badge badge-online";
-            text = "Discord: Łączenie...";
-        }
+    let discordOfflineTimer = null;
 
+    function applyDiscordBadge(className, text) {
         if (elBadgeDiscord && elBadgeDiscord.className !== className) {
             elBadgeDiscord.className = className;
         }
         if (elBadgeDiscordLabel && elBadgeDiscordLabel.textContent !== text) {
             elBadgeDiscordLabel.textContent = text;
+        }
+    }
+
+    function updateDiscordStatusUI(discord) {
+        currentDiscord = discord || {};
+
+        if (currentDiscord.ready) {
+            if (discordOfflineTimer) { clearTimeout(discordOfflineTimer); discordOfflineTimer = null; }
+            applyDiscordBadge("badge badge-online", `Discord: ${currentDiscord.user?.username || "Połączono"}`);
+        } else if (currentDiscord.connected) {
+            if (discordOfflineTimer) { clearTimeout(discordOfflineTimer); discordOfflineTimer = null; }
+            applyDiscordBadge("badge badge-online", "Discord: Łączenie...");
+        } else {
+            if (!discordOfflineTimer) {
+                discordOfflineTimer = setTimeout(() => {
+                    discordOfflineTimer = null;
+                    applyDiscordBadge("badge badge-offline", "Discord: Rozłączono");
+                }, 5000);
+            }
         }
     }
 
@@ -130,7 +140,6 @@
                 elLyricsSource.textContent = `źródło: ${p.source || "brak"}`;
             }
 
-            // Update Discord Preview with user custom format
             const fmtName = currentConfig.discord?.format?.name || cfgFormatName.value || "{song_name} - {lyrics}";
             const fmtDetails = currentConfig.discord?.format?.details || cfgFormatDetails.value || "{song_name} - {song_author}";
             const fmtState = currentConfig.discord?.format?.state || cfgFormatState.value || "{lyrics}";
@@ -242,7 +251,7 @@
         const updatedConfig = {
             discord: {
                 ...currentConfig.discord,
-                clientId: (cfgClientId ? cfgClientId.value.trim() : "") || currentConfig.discord?.clientId || "",
+                clientId: (cfgClientId ? cfgClientId.value.trim() : "") || currentConfig.discord?.clientId || "1504970968513122434",
                 showTimestamps: cfgShowTimestamps ? cfgShowTimestamps.checked : true,
                 showAlbumArt: cfgShowAlbumArt ? cfgShowAlbumArt.checked : true,
                 customLargeImage: (cfgCustomLargeImage ? cfgCustomLargeImage.value.trim() : ""),
@@ -272,7 +281,6 @@
         }
     });
 
-    // Start WebSocket + fallback polling
     connectWs();
     pollHttp();
     setInterval(pollHttp, 3000);

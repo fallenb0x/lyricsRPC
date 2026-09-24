@@ -40,7 +40,6 @@ body {
     gap: 24px;
 }
 
-/* Header */
 .header {
     display: flex;
     justify-content: space-between;
@@ -127,7 +126,6 @@ body {
     background: #ef4444;
 }
 
-/* Grid */
 .dashboard-grid {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
@@ -161,7 +159,6 @@ body {
     padding-bottom: 12px;
 }
 
-/* Now Playing */
 .now-playing {
     display: flex;
     gap: 18px;
@@ -261,7 +258,6 @@ body {
     transition: width 0.2s linear;
 }
 
-/* Live Lyrics Box */
 .lyrics-box {
     background: linear-gradient(145deg, #18181b, #121214);
     border: 1px solid rgba(29, 185, 84, 0.25);
@@ -298,7 +294,6 @@ body {
     text-shadow: 0 0 12px rgba(74, 222, 128, 0.2);
 }
 
-/* Discord Preview Card */
 .discord-preview-container {
     display: flex;
     flex-direction: column;
@@ -419,7 +414,6 @@ body {
     background: #6d6f78;
 }
 
-/* Forms */
 .config-form {
     display: flex;
     flex-direction: column;
@@ -477,7 +471,6 @@ body {
     font-weight: 500;
 }
 
-/* Switch */
 .switch {
     position: relative;
     display: inline-block;
@@ -524,7 +517,6 @@ input:checked + .slider:before {
     transform: translateX(20px);
 }
 
-/* Buttons */
 .actions-group {
     display: flex;
     gap: 12px;

@@ -42,7 +42,6 @@ export class WebServer {
         this.app = express();
         this.app.use(express.json({ limit: "2mb" }));
 
-        // Resolve static directory: check cwd, next to exe, parent of exe, or __dirname
         const exeDir = path.dirname(process.execPath);
         const candidates = [
             path.join(process.cwd(), "static"),
