@@ -60,18 +60,11 @@
         currentDiscord = discord || {};
 
         if (currentDiscord.ready) {
-            if (discordOfflineTimer) { clearTimeout(discordOfflineTimer); discordOfflineTimer = null; }
             applyDiscordBadge("badge badge-online", `Discord: ${currentDiscord.user?.username || "Połączono"}`);
         } else if (currentDiscord.connected) {
-            if (discordOfflineTimer) { clearTimeout(discordOfflineTimer); discordOfflineTimer = null; }
-            applyDiscordBadge("badge badge-online", "Discord: Łączenie...");
+            applyDiscordBadge("badge badge-offline", "Discord: Łączenie...");
         } else {
-            if (!discordOfflineTimer) {
-                discordOfflineTimer = setTimeout(() => {
-                    discordOfflineTimer = null;
-                    applyDiscordBadge("badge badge-offline", "Discord: Rozłączono");
-                }, 5000);
-            }
+            applyDiscordBadge("badge badge-offline", "Discord: Rozłączono");
         }
     }
 

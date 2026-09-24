@@ -61,6 +61,17 @@ export class WebServer {
         this.setupRoutes(staticDir);
         this.setupWebSocket();
         this.setupPeriodicBroadcast();
+
+        this.discordIpc.onStatusChange((connected, ready) => {
+            this.broadcast({
+                type: "DISCORD_STATUS",
+                discord: {
+                    ready: ready,
+                    connected: connected,
+                    user: this.discordIpc.currentUser
+                }
+            });
+        });
     }
 
     private setupRoutes(staticDir: string): void {

@@ -14,6 +14,11 @@ export class TrayManager {
 
     public start(): void {
         const psScript = `
+$cDef = '[DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow); [DllImport("kernel32.dll")] public static extern IntPtr GetConsoleWindow();'
+$cType = Add-Type -MemberDefinition $cDef -Name "Win32Cons" -Namespace Win32Utils -PassThru
+$hwnd = $cType::GetConsoleWindow()
+if ($hwnd -ne [IntPtr]::Zero) { $cType::ShowWindow($hwnd, 0) }
+
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 

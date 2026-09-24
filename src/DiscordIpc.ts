@@ -44,7 +44,6 @@ export class DiscordIpcClient {
 
     public updateClientId(newId: string): void {
         const cleanId = String(newId || "").trim();
-        if (cleanId === this.clientId) return;
         this.clientId = cleanId;
         if (!cleanId) {
             this.clearActivity();
@@ -62,7 +61,6 @@ export class DiscordIpcClient {
             this.notifyStatus();
             return;
         }
-        console.log(`🔌 Connecting to Discord IPC with Client ID: ${cleanId}...`);
         this.connect();
     }
 
