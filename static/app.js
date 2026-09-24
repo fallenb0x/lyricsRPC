@@ -30,6 +30,8 @@
     const cfgShowAlbumArt = document.getElementById("cfg-show-album-art");
     const cfgCustomLargeImage = document.getElementById("cfg-custom-large-image");
     const cfgClientId = document.getElementById("cfg-client-id");
+    let clientIdDirty = false;
+    if (cfgClientId) cfgClientId.addEventListener("input", () => { clientIdDirty = true; });
 
     function formatTime(ms) {
         if (!ms || isNaN(ms)) return "0:00";
@@ -190,7 +192,7 @@
         if (config.discord?.showTimestamps !== undefined) cfgShowTimestamps.checked = config.discord.showTimestamps;
         if (config.discord?.showAlbumArt !== undefined && cfgShowAlbumArt) cfgShowAlbumArt.checked = config.discord.showAlbumArt;
         if (config.discord?.customLargeImage !== undefined && cfgCustomLargeImage) cfgCustomLargeImage.value = config.discord.customLargeImage || "";
-        if (config.discord?.clientId && cfgClientId) cfgClientId.value = config.discord.clientId;
+        if (config.discord?.clientId && cfgClientId && !clientIdDirty) cfgClientId.value = config.discord.clientId;
     }
 
     function connectWs() {
@@ -251,7 +253,7 @@
         const updatedConfig = {
             discord: {
                 ...currentConfig.discord,
-                clientId: (cfgClientId ? cfgClientId.value.trim() : "") || currentConfig.discord?.clientId || "1504970968513122434",
+                clientId: cfgClientId ? cfgClientId.value.trim() : (currentConfig.discord?.clientId || ""),
                 showTimestamps: cfgShowTimestamps ? cfgShowTimestamps.checked : true,
                 showAlbumArt: cfgShowAlbumArt ? cfgShowAlbumArt.checked : true,
                 customLargeImage: (cfgCustomLargeImage ? cfgCustomLargeImage.value.trim() : ""),
@@ -272,6 +274,7 @@
             });
 
             if (res.ok) {
+                clientIdDirty = false;
                 alert("Ustawienia zostały pomyślnie zapisane!");
             } else {
                 alert("Błąd podczas zapisywania konfiguracji.");

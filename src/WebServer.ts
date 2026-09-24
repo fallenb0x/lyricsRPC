@@ -107,7 +107,7 @@ export class WebServer {
                 if (req.body?.discord) {
                     const oldClientId = this.settingsManager.settings.discord.clientId;
                     this.settingsManager.updateDiscord(req.body.discord);
-                    if (req.body.discord.clientId && req.body.discord.clientId !== oldClientId) {
+                    if (req.body.discord.clientId !== undefined && req.body.discord.clientId !== oldClientId) {
                         this.discordIpc.updateClientId(req.body.discord.clientId);
                     }
                     this.broadcast({

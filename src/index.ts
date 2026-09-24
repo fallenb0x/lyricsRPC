@@ -219,7 +219,7 @@ export class LyricsRpcApp {
         const p = this.currentPlayback;
         const cfg = this.settingsManager.settings.discord;
 
-        if (!cfg.enabled || !p.active || !p.songName) {
+        if (!cfg.enabled || !cfg.clientId || !p.active || !p.songName) {
             if (this.lastDispatchedSignature !== "CLEARED") {
                 this.lastDispatchedSignature = "CLEARED";
                 this.discordIpc.clearActivity();

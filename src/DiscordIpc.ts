@@ -43,8 +43,24 @@ export class DiscordIpcClient {
     }
 
     public updateClientId(newId: string): void {
-        if (!newId || newId === this.clientId) return;
+        if (newId === this.clientId) return;
         this.clientId = newId;
+        if (!newId) {
+            this.clearActivity();
+            if (this.reconnectTimer) {
+                clearTimeout(this.reconnectTimer);
+                this.reconnectTimer = null;
+            }
+            if (this.socket) {
+                this.socket.destroy();
+                this.socket = null;
+            }
+            this.connected = false;
+            this.ready = false;
+            this.currentUser = null;
+            this.notifyStatus();
+            return;
+        }
         this.connect();
     }
 
