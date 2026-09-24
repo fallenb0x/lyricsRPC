@@ -68,10 +68,11 @@ Wymagany [Bun](https://bun.sh) lub [Node.js](https://nodejs.org).
 
 ### Opcja 2: Gotowy plik `.exe` (Zalecane)
 
-1. Pobierz i wypakuj **`LyricsRPC-v1.0.0.zip`** z zakładki [Releases](../../releases).
+1. Pobierz i wypakuj **`LyricsRPC v0.2.0.zip`** z zakładki [Releases](../../releases).
 2. Uruchom **`LyricsRPC.exe`**.
-3. Włącz muzykę na Spotify — tekst natychmiast pojawi się na Twoim profilu Discord!
-4. Panel ustawień otworzy się automatycznie w przeglądarce pod adresem [http://localhost:8999](http://localhost:8999).
+3. Wejdź na [Discord Developer Portal](https://discord.com/developers/applications), kliknij **New Application**, nazwij aplikację (np. "Spotify" lub "Lyrics") i skopiuj **Application ID** (Client ID).
+4. Otwórz panel w przeglądarce: **[http://localhost:8999](http://localhost:8999)**, wklej skopiowany ID w polu **Discord Application Client ID** i kliknij **Zapisz ustawienia**.
+5. Włącz dowolny utwór na Spotify — tekst natychmiast zacznie synchronizować się na Twoim profilu Discord!
 
 ---
 
