@@ -89,9 +89,12 @@ while ($true) {
         if (this.isRunning) return;
         this.isRunning = true;
 
-        this.process = spawn("powershell", [
-            "-NoProfile",
+        this.process = spawn("powershell.exe", [
+            "-NoLogo",
             "-NonInteractive",
+            "-NoProfile",
+            "-WindowStyle",
+            "Hidden",
             "-ExecutionPolicy",
             "Bypass",
             "-Command",
