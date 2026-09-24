@@ -209,8 +209,8 @@
                 } else if (msg.type === "PLAYBACK_UPDATE") {
                     updatePlaybackUI(msg.playback);
                     updateSpicetifyStatusUI({ ready: true, connected: true });
-                } else if (msg.type === "STATUS_UPDATE") {
-                    updateDiscordStatusUI(msg.discord);
+                } else if (msg.type === "STATUS_UPDATE" || msg.type === "DISCORD_STATUS") {
+                    if (msg.discord) updateDiscordStatusUI(msg.discord);
                     if (msg.spicetify) updateSpicetifyStatusUI(msg.spicetify);
                 } else if (msg.type === "CONFIG_UPDATE") {
                     populateConfigForm(msg.config);
@@ -225,7 +225,6 @@
     }
 
     async function pollHttp() {
-        if (ws && ws.readyState === WebSocket.OPEN) return;
         try {
             const res = await fetch("/api/status", { cache: "no-store" });
             if (res.ok) {

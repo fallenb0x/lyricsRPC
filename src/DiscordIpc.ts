@@ -35,7 +35,7 @@ export class DiscordIpcClient {
     private recvBuffer = Buffer.alloc(0);
 
     private onReadyCallback?: (user: any) => void;
-    private onStatusCallback?: (connected: boolean, ready: boolean) => void;
+    private onStatusCallbacks: Array<(connected: boolean, ready: boolean) => void> = [];
     public currentUser: any = null;
 
     constructor(clientId: string) {
@@ -45,16 +45,16 @@ export class DiscordIpcClient {
     public updateClientId(newId: string): void {
         const cleanId = String(newId || "").trim();
         this.clientId = cleanId;
+        if (this.reconnectTimer) {
+            clearTimeout(this.reconnectTimer);
+            this.reconnectTimer = null;
+        }
+        if (this.socket) {
+            try { this.socket.destroy(); } catch {}
+            this.socket = null;
+        }
         if (!cleanId) {
             this.clearActivity();
-            if (this.reconnectTimer) {
-                clearTimeout(this.reconnectTimer);
-                this.reconnectTimer = null;
-            }
-            if (this.socket) {
-                this.socket.destroy();
-                this.socket = null;
-            }
             this.connected = false;
             this.ready = false;
             this.currentUser = null;
@@ -65,7 +65,7 @@ export class DiscordIpcClient {
     }
 
     public onReady(cb: (user: any) => void)                         { this.onReadyCallback  = cb; }
-    public onStatusChange(cb: (c: boolean, r: boolean) => void)    { this.onStatusCallback = cb; }
+    public onStatusChange(cb: (c: boolean, r: boolean) => void)    { this.onStatusCallbacks.push(cb); }
     public isReady(): boolean    { return this.connected && this.ready; }
     public isConnected(): boolean { return this.connected; }
 
@@ -255,7 +255,7 @@ export class DiscordIpcClient {
         const key = `${this.connected}:${this.ready}:${this.currentUser?.id ?? ""}`;
         if (key !== this.lastNotifiedState) {
             this.lastNotifiedState = key;
-            this.onStatusCallback?.(this.connected, this.ready);
+            this.onStatusCallbacks.forEach(cb => cb(this.connected, this.ready));
         }
     }
 }
