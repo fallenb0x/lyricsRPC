@@ -46,29 +46,6 @@ Lekka aplikacja Discord Rich Presence dla systemu Windows, synchronizująca teks
 
 ---
 
-### Uruchomienie ze źródeł
-
-Wymagane środowisko [Bun](https://bun.sh) (v1.1+):
-
-```bash
-# 1. Klonowanie repozytorium
-git clone https://github.com/fallenb0x/lyricsRPC.git
-cd lyricsRPC
-
-# 2. Instalacja zależności
-bun install
-
-# 3. Uruchomienie
-bun run src/index.ts
-```
-
-Kompilacja do plików wykonywalnych:
-```bash
-bun run compile-bun
-csc.exe /target:winexe /optimize+ /win32icon:"static/logo.ico" /out:"build/LyricsTray.exe" /reference:System.Windows.Forms.dll /reference:System.Drawing.dll "src/TrayApp.cs"
-```
-
----
 ## Jak dodać do autostartu
 1. kliknij prawym przyciskiem myszy na LyricsRPC.exe
 2. kliknij utwórz skrót
