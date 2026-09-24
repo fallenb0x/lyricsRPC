@@ -4,7 +4,7 @@ import { LyricsManager } from "./LyricsManager";
 import { WebServer, PlaybackStatePayload } from "./WebServer";
 import { WindowsMediaWatcher, NativeMediaPlayback } from "./WindowsMediaWatcher";
 import { SongLyrics } from "./Sources/BaseSource";
-import { exec } from "child_process";
+import { TrayManager } from "./TrayManager";
 
 export class LyricsRpcApp {
     private settingsManager: SettingsManager;
@@ -12,6 +12,7 @@ export class LyricsRpcApp {
     private lyricsManager: LyricsManager;
     private webServer: WebServer;
     private mediaWatcher: WindowsMediaWatcher;
+    private trayManager: TrayManager;
 
     private currentLyrics: SongLyrics | null = null;
     private currentLyricsKey = "";
@@ -46,6 +47,11 @@ export class LyricsRpcApp {
             this.discordIpc,
             () => this.currentPlayback
         );
+
+        const port = this.settingsManager.settings.port || 8999;
+        this.trayManager = new TrayManager(port, () => {
+            this.cleanupAndExit();
+        });
     }
 
     public async start(): Promise<void> {
@@ -59,8 +65,10 @@ export class LyricsRpcApp {
             return;
         }
 
+        this.trayManager.start();
+
         if (this.settingsManager.settings.openBrowserOnStart) {
-            exec(`start http://localhost:${port}`);
+            this.trayManager.openAppWindow();
         }
 
         console.log("🔌 Connecting to Discord IPC...");
@@ -288,6 +296,17 @@ export class LyricsRpcApp {
         }
 
         this.discordIpc.setActivity(activity);
+    }
+
+    public cleanupAndExit(): void {
+        if (this.updateInterval) {
+            clearInterval(this.updateInterval);
+            this.updateInterval = null;
+        }
+        this.discordIpc.clearActivity();
+        this.mediaWatcher.stop();
+        this.trayManager.stop();
+        process.exit(0);
     }
 }
 
