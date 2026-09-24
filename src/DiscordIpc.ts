@@ -236,8 +236,16 @@ export class DiscordIpcClient {
             return;
         }
 
-        if (evt === "ERROR") {
-            console.error("[IPC] Discord error:", body.data?.message ?? body);
+        if (evt === "ERROR" || body.code !== undefined) {
+            this.ready = false;
+            this.currentUser = null;
+            this.notifyStatus();
+            if (this.socket) {
+                try { this.socket.destroy(); } catch {}
+                this.socket = null;
+            }
+            this.scheduleReconnect();
+            return;
         }
     }
 

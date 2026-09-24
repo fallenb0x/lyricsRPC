@@ -1,4 +1,4 @@
-import { spawn, ChildProcess, exec } from "child_process";
+import { spawn, ChildProcess } from "child_process";
 import fs from "fs";
 import path from "path";
 
@@ -75,7 +75,17 @@ $notify.add_Click({
 [System.Windows.Forms.Application]::Run()
 `;
 
-        this.trayProcess = spawn("powershell.exe", ["-NoProfile", "-WindowStyle", "Hidden", "-Command", psScript], {
+        this.trayProcess = spawn("powershell.exe", [
+            "-NoLogo",
+            "-NonInteractive",
+            "-NoProfile",
+            "-WindowStyle",
+            "Hidden",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            psScript
+        ], {
             stdio: ["ignore", "pipe", "ignore"],
             windowsHide: true
         });
@@ -118,26 +128,50 @@ $notify.add_Click({
         const browserPath = this.detectChromiumBrowser();
 
         if (browserPath) {
-            exec(`"${browserPath}" --app="${url}" --window-size=1040,760`, (err) => {
-                if (err) {
-                    exec(`start ${url}`);
-                }
-            });
+            try {
+                const child = spawn(browserPath, [
+                    `--app=${url}`,
+                    "--window-size=1040,760"
+                ], {
+                    detached: true,
+                    stdio: "ignore",
+                    windowsHide: true
+                });
+                child.unref();
+            } catch {
+                spawn("cmd.exe", ["/c", "start", url], {
+                    detached: true,
+                    stdio: "ignore",
+                    windowsHide: true
+                }).unref();
+            }
         } else {
-            exec(`start ${url}`);
+            spawn("cmd.exe", ["/c", "start", url], {
+                detached: true,
+                stdio: "ignore",
+                windowsHide: true
+            }).unref();
         }
     }
 
     private detectChromiumBrowser(): string | null {
+        const localAppData = process.env["LOCALAPPDATA"] || "";
+        const progFiles = process.env["ProgramFiles"] || "C:\\Program Files";
+        const progFilesX86 = process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)";
+        const progW6432 = process.env["ProgramW6432"] || "C:\\Program Files";
+
         const candidates = [
-            path.join(process.env["ProgramFiles"] || "C:\\Program Files", "Microsoft\\Edge\\Application\\msedge.exe"),
-            path.join(process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", "Microsoft\\Edge\\Application\\msedge.exe"),
-            path.join(process.env["ProgramFiles"] || "C:\\Program Files", "Google\\Chrome\\Application\\chrome.exe"),
-            path.join(process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", "Google\\Chrome\\Application\\chrome.exe"),
-            path.join(process.env["LOCALAPPDATA"] || "", "Microsoft\\Edge\\Application\\msedge.exe"),
-            path.join(process.env["LOCALAPPDATA"] || "", "Google\\Chrome\\Application\\chrome.exe"),
-            path.join(process.env["ProgramFiles"] || "C:\\Program Files", "BraveSoftware\\Brave-Browser\\Application\\brave.exe"),
-            path.join(process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", "BraveSoftware\\Brave-Browser\\Application\\brave.exe")
+            path.join(progFilesX86, "Microsoft\\Edge\\Application\\msedge.exe"),
+            path.join(progFiles, "Microsoft\\Edge\\Application\\msedge.exe"),
+            path.join(progW6432, "Microsoft\\Edge\\Application\\msedge.exe"),
+            path.join(localAppData, "Microsoft\\Edge\\Application\\msedge.exe"),
+            path.join(progFiles, "Google\\Chrome\\Application\\chrome.exe"),
+            path.join(progFilesX86, "Google\\Chrome\\Application\\chrome.exe"),
+            path.join(progW6432, "Google\\Chrome\\Application\\chrome.exe"),
+            path.join(localAppData, "Google\\Chrome\\Application\\chrome.exe"),
+            path.join(progFiles, "BraveSoftware\\Brave-Browser\\Application\\brave.exe"),
+            path.join(progFilesX86, "BraveSoftware\\Brave-Browser\\Application\\brave.exe"),
+            path.join(localAppData, "BraveSoftware\\Brave-Browser\\Application\\brave.exe")
         ];
 
         for (const c of candidates) {

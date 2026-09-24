@@ -3,7 +3,7 @@ import http from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import path from "path";
 import fs from "fs";
-import { exec } from "child_process";
+import { spawn } from "child_process";
 import { SettingsManager } from "./SettingsManager";
 import { DiscordIpcClient } from "./DiscordIpc";
 
@@ -224,7 +224,35 @@ export class WebServer {
             this.server.on("error", (err: any) => {
                 if (err.code === "EADDRINUSE") {
                     console.log(`⚠️ Aplikacja LyricsRPC już działa w tle (port ${port} jest zajęty).`);
-                    exec(`start http://localhost:${port}`);
+                    const candidates = [
+                        path.join(process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", "Microsoft\\Edge\\Application\\msedge.exe"),
+                        path.join(process.env["ProgramFiles"] || "C:\\Program Files", "Microsoft\\Edge\\Application\\msedge.exe"),
+                        path.join(process.env["LOCALAPPDATA"] || "", "Microsoft\\Edge\\Application\\msedge.exe"),
+                        path.join(process.env["ProgramFiles"] || "C:\\Program Files", "Google\\Chrome\\Application\\chrome.exe"),
+                        path.join(process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", "Google\\Chrome\\Application\\chrome.exe")
+                    ];
+                    let found = candidates.find(c => fs.existsSync(c));
+                    if (found) {
+                        try {
+                            spawn(found, [`--app=http://localhost:${port}`, "--window-size=1040,760"], {
+                                detached: true,
+                                stdio: "ignore",
+                                windowsHide: true
+                            }).unref();
+                        } catch {
+                            spawn("cmd.exe", ["/c", "start", `http://localhost:${port}`], {
+                                detached: true,
+                                stdio: "ignore",
+                                windowsHide: true
+                            }).unref();
+                        }
+                    } else {
+                        spawn("cmd.exe", ["/c", "start", `http://localhost:${port}`], {
+                            detached: true,
+                            stdio: "ignore",
+                            windowsHide: true
+                        }).unref();
+                    }
                     setTimeout(() => process.exit(0), 500);
                 } else {
                     console.error("Błąd serwera Web:", err);
