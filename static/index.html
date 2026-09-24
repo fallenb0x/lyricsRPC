@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyrics RPC - Discord Rich Presence</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-group">
+                <div class="logo-icon">🎵</div>
+                <div class="logo-text">
+                    <h1>Lyrics <span>RPC</span></h1>
+                    <p class="subtitle">Spotify Real-Time Lyrics Synchronizer</p>
+                </div>
+            </div>
+            <div class="status-badges">
+                <div id="badge-discord" class="badge badge-offline">
+                    <span class="dot"></span>
+                    <span class="label">Discord: Rozłączono</span>
+                </div>
+                <div id="badge-spicetify" class="badge badge-offline">
+                    <span class="dot"></span>
+                    <span class="label">Spotify: Oczekiwanie</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Grid -->
+        <main class="dashboard-grid">
+            <!-- Left Column: Live Player & Discord Preview -->
+            <section class="card live-card">
+                <h2 class="card-title"><span>📻</span> Odtwarzacz & Tekst na żywo</h2>
+
+                <div class="now-playing">
+                    <div class="cover-wrapper">
+                        <img id="track-cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%2318181b'/%3E%3Ccircle cx='150' cy='150' r='50' fill='%231db954'/%3E%3Cpath d='M125 140c15-4 35-2 50 6M128 155c12-3 28-1 40 5M132 170c10-2 22 0 32 5' stroke='%23000' stroke-width='4' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" alt="Okładka utworu">
+                        <div id="playback-pill" class="playback-pill">Wstrzymano</div>
+                    </div>
+                    <div class="track-details">
+                        <h3 id="track-title">Brak odtwarzanego utworu</h3>
+                        <p id="track-artist">Uruchom utwór w Spotify</p>
+                        
+                        <div class="progress-container">
+                            <div class="time-labels">
+                                <span id="time-current">0:00</span>
+                                <span id="time-total">0:00</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Lyric Display Box -->
+                <div class="lyrics-box">
+                    <div class="lyrics-header">
+                        <span>Aktualny wers tekstu:</span>
+                        <span id="lyrics-source-badge" class="source-tag">źródło: brak</span>
+                    </div>
+                    <div id="lyrics-current" class="lyrics-text">
+                        ♪ Czekam na tekst piosenki...
+                    </div>
+                </div>
+
+                <!-- Discord Activity Preview -->
+                <div class="discord-preview-container">
+                    <h3 class="preview-title">Podgląd Aktywności na Profilu Discord</h3>
+                    <div class="discord-card">
+                        <div class="discord-header">
+                            <span class="discord-type">SŁUCHA</span>
+                            <span id="discord-app-name" class="discord-app-title">Tytuł - Tekst</span>
+                        </div>
+                        <div class="discord-body">
+                            <div class="discord-assets">
+                                <img id="discord-large-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2318181b'/%3E%3Ccircle cx='32' cy='32' r='20' fill='%231db954'/%3E%3Cpath d='M23 28c5-2 13-1 18 3M24 33c4-1 10 0 14 2M26 38c3-1 8 0 11 2' stroke='%23000' stroke-width='2.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" alt="Okładka utworu">
+                            </div>
+                            <div class="discord-text-content">
+                                <div id="discord-line-1" class="discord-line-1">Tytuł - Wykonawca</div>
+                                <div id="discord-line-2" class="discord-line-2">Aktualny wers tekstu</div>
+                                <div id="discord-time" class="discord-line-time">0:00 z 3:45</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Column: Settings & Quick Actions -->
+            <section class="card settings-card">
+                <h2 class="card-title"><span>⚙️</span> Konfiguracja</h2>
+
+                <form id="config-form" class="config-form">
+                    <div class="form-group">
+                        <label for="cfg-format-name">Format Tytułu Aktywności ("Słucha...")</label>
+                        <input type="text" id="cfg-format-name" value="{song_name} - {lyrics}">
+                        <small>Zmienne: <code>{song_name}</code>, <code>{song_author}</code>, <code>{lyrics}</code></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cfg-format-details">Format 1. linii (Szczegóły / Details)</label>
+                        <input type="text" id="cfg-format-details" value="{song_name} - {song_author}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cfg-format-state">Format 2. linii (Stan / State)</label>
+                        <input type="text" id="cfg-format-state" value="{lyrics}">
+                    </div>
+
+                    <div class="form-group-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="cfg-show-timestamps" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="toggle-label">Pokaż licznik czasu w Discord</span>
+                    </div>
+
+                    <div class="form-group-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="cfg-show-album-art" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="toggle-label">Pokaż okładkę albumu jako duży obraz</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cfg-custom-large-image">Własny URL dużego obrazu (opcjonalne)</label>
+                        <input type="text" id="cfg-custom-large-image" placeholder="https://i.imgur.com/przykład.gif">
+                        <small>Zostaw puste, aby używać automatycznej okładki albumu.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cfg-client-id">Discord Application Client ID</label>
+                        <input type="text" id="cfg-client-id" value="1504970968513122434" placeholder="1504970968513122434">
+                        <small>ID aplikacji Discord wyświetlającej obecność (domyślnie: Spotify / LyricsRPC).</small>
+                    </div>
+
+                    <div class="actions-group">
+                        <button type="submit" class="btn btn-primary">Zapisz ustawienia</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js?v=3.6.0"></script>
+</body>
+</html>

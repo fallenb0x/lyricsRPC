@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Lock files (use package.json only)
+bun.lock
+bun.lockb
+pnpm-lock.yaml
+
+# Bun temp files
+.*.bun-build
+
+# User config (has personal clientId / image URL)
+settings.json
+
+# Cache
+cache/
+
+# OS files
+.DS_Store
+Thumbs.db

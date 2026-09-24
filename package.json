@@ -1,0 +1,24 @@
+{
+  "name": "lyrics-rpc-standalone",
+  "version": "1.0.0",
+  "description": "Standalone Lyrics RPC for Discord and Spotify with direct Discord IPC and multi-source lyrics fetching",
+  "main": "dist/index.js",
+  "bin": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "compile-bun": "bun build --compile --target=bun-windows-x64 src/index.ts --outfile build/LyricsRPC.exe",
+    "compile-pkg": "pkg dist/index.js --targets node18-win-x64 --output build/LyricsRPC.exe"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "he": "^1.2.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/he": "^1.2.3",
+    "@types/node": "^20.11.0",
+    "@types/ws": "^8.5.10",
+    "typescript": "^5.3.3"
+  }
+}

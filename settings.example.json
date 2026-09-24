@@ -1,0 +1,17 @@
+{
+  "port": 8999,
+  "openBrowserOnStart": true,
+  "minimizeToTray": true,
+  "discord": {
+    "clientId": "YOUR_DISCORD_CLIENT_ID",
+    "enabled": true,
+    "showTimestamps": true,
+    "showAlbumArt": true,
+    "customLargeImage": "",
+    "format": {
+      "name": "{song_name} - {lyrics}",
+      "details": "{song_name} - {song_author}",
+      "state": "{lyrics}"
+    }
+  }
+}
