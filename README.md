@@ -1,58 +1,54 @@
 <p align="center">
-  <img src="static/logo.png" alt="LyricsRPC Logo" width="160">
-</p>
-
-<h1 align="center">LyricsRPC</h1>
-
-<p align="center">
-  Lekka aplikacja Discord Rich Presence dla systemu Windows, która w czasie rzeczywistym synchronizuje i wyświetla wersy tekstu piosenek ze Spotify na Twoim profilu Discord.
-</p>
-
-<p align="center">
-  Działa w pełni autonomicznie przez <b>Windows Media Session (SMTC)</b> i <b>Discord IPC</b> — bez instalowania dodatków, modyfikacji Spotify czy Spicetify.
+  <img src="preview.png" alt="LyricsRPC Preview" width="850">
 </p>
 
 ---
 
-## ✨ Główne funkcje
+# LyricsRPC
 
-- 🎵 **Synchronizacja tekstu w czasie rzeczywistym** — Wyświetla na profilu Discord dokładnie ten wers, który w danym ułamku sekundy leci na Spotify.
-- 🪟 **Dedykowane okno aplikacji** — Działa jako niezależne okno aplikacji bez potrzeby otwierania przeglądarki.
-- 📌 **Zasobnik systemowy (System Tray)** — Działa dyskretnie w tle. Kliknięcie ikony w zasobniku przywraca okno, a menu pod prawym przyciskiem myszy umożliwia szybkie wyłączenie aplikacji.
-- 🎨 **Własna grafika lub okładka albumu** — Automatycznie pobiera okładkę odtwarzanego albumu lub pozwala ustawić własny obraz/GIF.
-- ⏱️ **Pasek postępu i czas utworu** — Pokazuje upływający czas utworu bezpośrednio w profilu Discord.
-- ⚡ **Minimalne zużycie zasobów** — Lekki proces natywny, zoptymalizowany pod kątem zerowego wpływu na wydajność gier i systemu.
+Lekka aplikacja Discord Rich Presence dla systemu Windows, synchronizująca teksty piosenek ze Spotify w czasie rzeczywistym na profilu Discord. Działa bezpośrednio przez Windows Media Session (SMTC) i Discord IPC — bez konieczności instalowania wtyczek, rozszerzeń czy modyfikowania klienta Spotify.
 
 ---
 
-## 📋 Wymagania
+## Funkcje
 
-- **System operacyjny:** Windows 10 lub Windows 11 (64-bit)
-- **Spotify:** Oficjalna aplikacja desktopowa Spotify
-- **Discord:** Oficjalna aplikacja desktopowa Discord
-- **Discord Application ID:** Własny identyfikator aplikacji z [Discord Developer Portal](https://discord.com/developers/applications)
+- **Synchronizacja tekstu w czasie rzeczywistym** — Wyświetla na profilu Discord wers tekstu aktualnie odtwarzany w utworze.
+- **Dedykowane okno aplikacji** — Działa jako niezależne okno aplikacji bez potrzeby otwierania przeglądarki.
+- **Zasobnik systemowy (Tray)** — Działa w tle w zasobniku systemowym; minimalizuje się do traya i pozwala na szybkie przywracanie lub wyłączenie.
+- **Okładka lub własna grafika** — Wyświetla oryginalną okładkę albumu lub niestandardowy obraz/GIF.
+- **Pasek postępu i czas utworu** — Wyświetla dokładny czas trwania i postęp utworu na Discordzie.
+- **Niskie zużycie zasobów** — Minimalne obciążenie procesora i pamięci RAM.
 
 ---
 
-## 🚀 Instalacja i Uruchomienie
+## Wymagania
 
-### Szybki start (Zalecane)
+- **Ponadprzeciętne IQ** (lub umiejętność czytania ze zrozumieniem)
+- **Windows 10 / 11** (64-bit)
+- **Spotify** (wersja desktopowa)
+- **Discord** (wersja desktopowa)
+- **Discord Application ID** (Client ID z [Discord Developer Portal](https://discord.com/developers/applications))
 
-1. Pobierz archiwum **`LyricsRPC v0.2.1.zip`** z zakładki [Releases](../../releases).
-2. Wypakuj całą zawartość do wybranego folderu (np. `C:\Program Files\LyricsRPC` lub dowolnego innego katalogu).
-3. Uruchom **`LyricsRPC.exe`**.
-4. W oknie aplikacji wklej swój **Discord Application ID** (Client ID):
+---
+
+## Instalacja i Uruchomienie
+
+### Gotowa paczka (Zalecane)
+
+1. Pobierz i wypakuj **`LyricsRPC v0.2.1.zip`** z zakładki [Releases](../../releases).
+2. Uruchom **`LyricsRPC.exe`**.
+3. W oknie programu wklej swój **Application ID** z Discord Developer Portal:
    - Wejdź na [Discord Developer Portal](https://discord.com/developers/applications).
-   - Kliknij **New Application**, wpisz nazwę (np. `Spotify` lub `Lyrics`) i zapisz.
+   - Kliknij **New Application**, podaj nazwę i zapisz.
    - W zakładce **General Information** skopiuj **Application ID**.
-   - Wklej identyfikator w oknie LyricsRPC i kliknij **Zapisz ustawienia**.
-5. Włącz muzykę w Spotify — tekst zacznie natychmiast pojawiać się na Twoim profilu Discord!
+   - Wklej identyfikator w oknie programu i kliknij **Zapisz ustawienia**.
+4. Włącz utwór na Spotify — tekst pojawi się na profilu Discord.
 
 ---
 
-### Uruchomienie ze źródeł (Dla programistów)
+### Uruchomienie ze źródeł
 
-Wymagane środowisko [Bun](https://bun.sh) (v1.1+) na systemie Windows.
+Wymagane środowisko [Bun](https://bun.sh) (v1.1+):
 
 ```bash
 # 1. Klonowanie repozytorium
@@ -62,24 +58,21 @@ cd lyricsRPC
 # 2. Instalacja zależności
 bun install
 
-# 3. Uruchomienie w trybie developerskim
+# 3. Uruchomienie
 bun run src/index.ts
 ```
 
-Aby skompilować pliki wykonywalne:
+Kompilacja do plików wykonywalnych:
 ```bash
-# Kompilacja głównego pliku wykonywalnego
 bun run compile-bun
-
-# Kompilacja pomocnika zasobnika systemowego
 csc.exe /target:winexe /optimize+ /win32icon:"static/logo.ico" /out:"build/LyricsTray.exe" /reference:System.Windows.Forms.dll /reference:System.Drawing.dll "src/TrayApp.cs"
 ```
 
 ---
 
-## ⚙️ Konfiguracja i Ustawienia
+## Konfiguracja
 
-Ustawienia można zmieniać bezpośrednio w oknie programu lub edytując plik `settings.json`:
+Ustawienia można zmieniać w oknie programu lub w pliku `settings.json`:
 
 ```json
 {
@@ -101,40 +94,36 @@ Ustawienia można zmieniać bezpośrednio w oknie programu lub edytując plik `s
 }
 ```
 
-### Zmienne w szablonach formatowania:
-- `{song_name}` — Tytuł aktualnego utworu
+### Zmienne szablonu formatowania:
+- `{song_name}` — Tytuł utworu
 - `{song_author}` — Wykonawca utworu
-- `{lyrics}` — Aktualnie odtwarzany wers tekstu
+- `{lyrics}` — Aktualny wers tekstu
 
 ---
 
-## 🗑️ Odinstalowanie
+## Odinstalowanie
 
-Aplikacja jest w pełni przenośna (portable) i nie modyfikuje rejestru systemu ani nie instaluje usług:
+Aplikacja jest w pełni przenośna (portable), nie tworzy wpisów w rejestrze i nie instaluje usług systemowych:
 
-1. Kliknij prawym przyciskiem myszy na ikonę **LyricsRPC** w zasobniku systemowym (obok zegara Windows) i wybierz **Wyłącz**.
-2. Usuń folder z wypakowaną aplikacją.
-3. To wszystko — program został całkowicie usunięty.
+1. Kliknij prawym przyciskiem myszy ikonę programu w zasobniku systemowym (obok zegarka) i wybierz **Wyłącz**.
+2. Usuń folder z programem.
 
 ---
 
-## ❓ FAQ (Często zadawane pytania)
+## FAQ
 
-#### 1. Status na Discordzie się nie wyświetla / wskaźnik pokazuje „Rozłączono”
-- Upewnij się, że desktopowa aplikacja Discord jest uruchomiona i jesteś w niej zalogowany.
-- Sprawdź w Discordzie: **Ustawienia użytkownika** ➔ **Prywatność aktywności** ➔ włącz opcję **„Wyświetlaj bieżącą aktywność jako status”**.
-- Upewnij się, że wklejony **Application ID** z Discord Developer Portal jest poprawny i kliknięto **Zapisz ustawienia**.
+**1. Status na Discordzie się nie wyświetla / wskaźnik pokazuje „Rozłączono”**
+- Upewnij się, że desktopowa aplikacja Discord jest włączona i jesteś zalogowany.
+- W ustawieniach Discorda przejdź do: **Ustawienia użytkownika** ➔ **Prywatność aktywności** ➔ włącz **„Wyświetlaj bieżącą aktywność jako status”**.
+- Sprawdź, czy wprowadzony Application ID jest poprawny i kliknięto przycisk zapisu.
 
-#### 2. Muzyka gra, ale tekst nie jest wyświetlany
-- Teksty pobierane są automatycznie z serwisów LrcLib oraz NetEase Music. Jeśli dany utwór nie posiada zsynchronizowanego tekstu w bazach, aplikacja wyświetli status domyślny lub tytuł i wykonawcę.
-- Upewnij się, że Spotify odtwarza utwór lokalnie na tym samym komputerze.
+**2. Muzyka gra, ale brak tekstu piosenki**
+- Teksty pobierane są automatycznie z baz LrcLib oraz NetEase Music. Jeżeli utwór nie posiada zsynchronizowanego tekstu w bazie, wyświetlany jest stan domyślny lub tytuł i autor.
 
-#### 3. Jak schować lub ponownie otworzyć okno programu?
-- Zamknięcie lub zminimalizowanie okna pozwala programowi dalej działać w tle.
-- Aby przywrócić okno, kliknij lewym przyciskiem myszy na ikonę **LR** w zasobniku systemowym (obok zegarka na pasku zadań) lub kliknij prawym przyciskiem myszy i wybierz **Otwórz LyricsRPC**.
+**3. Jak zminimalizować, przywrócić lub zamknąć aplikację?**
+- Zamknięcie lub zminimalizowanie okna chowa program do zasobnika systemowego (tray).
+- Kliknięcie lewym przyciskiem myszy ikony w zasobniku przywraca okno.
+- Kliknięcie prawym przyciskiem myszy na ikonę i wybranie **Wyłącz** całkowicie zamyka program.
 
-#### 4. Jak całkowicie zamknąć aplikację?
-- Kliknij prawym przyciskiem myszy na ikonę w zasobniku systemowym i kliknij **Wyłącz**.
-
-#### 5. Co się stanie, gdy uruchomię aplikację po raz drugi?
-- Aplikacja automatycznie wykryje działającą instancję w tle, otworzy jej okno i natychmiast zamknie zbędny proces duplikatu.
+**4. Co się dzieje przy ponownym uruchomieniu programu?**
+- Aplikacja wykrywa już działający proces w tle, przywraca jego okno na pierwszy plan i zamyka duplikat.
