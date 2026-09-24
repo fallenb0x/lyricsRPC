@@ -118,7 +118,7 @@ export class WebServer {
                 if (req.body?.discord) {
                     const oldClientId = this.settingsManager.settings.discord.clientId;
                     this.settingsManager.updateDiscord(req.body.discord);
-                    if (req.body.discord.clientId !== undefined && req.body.discord.clientId !== oldClientId) {
+                    if (req.body.discord.clientId !== undefined) {
                         this.discordIpc.updateClientId(req.body.discord.clientId);
                     }
                     this.broadcast({
@@ -163,20 +163,13 @@ export class WebServer {
                 } catch {}
             });
 
-            const isDiscordReady = this.discordIpc.isReady();
-            const isSpicetifyReady = Date.now() - this.lastSpicetifySeen < 5000;
-
             ws.send(JSON.stringify({
                 type: "INIT",
                 playback: this.getPlaybackFn(),
                 discord: {
-                    ready: isDiscordReady,
+                    ready: this.discordIpc.isReady(),
                     connected: this.discordIpc.isConnected(),
                     user: this.discordIpc.currentUser
-                },
-                spicetify: {
-                    ready: isSpicetifyReady,
-                    connected: isSpicetifyReady
                 },
                 config: {
                     discord: this.settingsManager.settings.discord,
@@ -189,19 +182,12 @@ export class WebServer {
     private setupPeriodicBroadcast(): void {
         setInterval(() => {
             if (this.wsClients.size > 0) {
-                const isDiscordReady = this.discordIpc.isReady();
-                const isSpicetifyReady = Date.now() - this.lastSpicetifySeen < 5000;
-
                 this.broadcast({
                     type: "STATUS_UPDATE",
                     discord: {
-                        ready: isDiscordReady,
+                        ready: this.discordIpc.isReady(),
                         connected: this.discordIpc.isConnected(),
                         user: this.discordIpc.currentUser
-                    },
-                    spicetify: {
-                        ready: isSpicetifyReady,
-                        connected: isSpicetifyReady
                     }
                 });
             }

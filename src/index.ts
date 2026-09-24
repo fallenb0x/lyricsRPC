@@ -79,14 +79,6 @@ export class LyricsRpcApp {
             this.dispatchDiscordActivity(true);
         });
 
-        this.discordIpc.onStatusChange((connected, ready) => {
-            if (!this.settingsManager.settings.discord.clientId) {
-                console.log("ℹ️ Discord Client ID nie jest skonfigurowany. Otwórz http://localhost:8999 i wpisz swój Client ID.");
-            } else if (!connected) {
-                console.log("⚠️ Discord disconnected. Retrying...");
-            }
-        });
-
         console.log("🎵 Starting native Windows Spotify media tracker...");
         this.mediaWatcher.onMediaChange((media) => this.handleNativeMediaUpdate(media));
         this.mediaWatcher.start();

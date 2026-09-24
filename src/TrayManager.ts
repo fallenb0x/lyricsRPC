@@ -13,105 +13,38 @@ export class TrayManager {
     }
 
     public start(): void {
-        const psScript = `
-$cDef = '[DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow); [DllImport("kernel32.dll")] public static extern IntPtr GetConsoleWindow();'
-$cType = Add-Type -MemberDefinition $cDef -Name "Win32Cons" -Namespace Win32Utils -PassThru
-$hwnd = $cType::GetConsoleWindow()
-if ($hwnd -ne [IntPtr]::Zero) { $cType::ShowWindow($hwnd, 0) }
+        const trayExePath = this.resolveTrayBinary();
+        if (!trayExePath) return;
 
-Add-Type -AssemblyName System.Windows.Forms
-Add-Type -AssemblyName System.Drawing
+        try {
+            this.trayProcess = spawn(trayExePath, [], {
+                stdio: ["pipe", "pipe", "ignore"],
+                windowsHide: true
+            });
 
-$notify = New-Object System.Windows.Forms.NotifyIcon
-$notify.Text = "LyricsRPC"
+            if (this.trayProcess.stdout) {
+                let buffer = "";
+                this.trayProcess.stdout.on("data", (chunk: Buffer) => {
+                    buffer += chunk.toString("utf8");
+                    const lines = buffer.split(/\r?\n/);
+                    buffer = lines.pop() || "";
 
-$iconPath = "${path.join(process.cwd(), "static", "logo.png").replace(/\\/g, "\\\\")}"
-$setCustomIcon = $false
-
-if (Test-Path $iconPath) {
-    try {
-        $bmp = [System.Drawing.Bitmap]::FromFile($iconPath)
-        $hIcon = $bmp.GetHicon()
-        $notify.Icon = [System.Drawing.Icon]::FromHandle($hIcon)
-        $setCustomIcon = $true
-    } catch {}
-}
-
-if (-not $setCustomIcon) {
-    $notify.Icon = [System.Drawing.SystemIcons]::Application
-}
-
-$notify.Visible = $true
-
-$contextMenu = New-Object System.Windows.Forms.ContextMenuStrip
-$openItem = $contextMenu.Items.Add("Otwórz LyricsRPC")
-$openItem.Font = New-Object System.Drawing.Font($openItem.Font, [System.Drawing.FontStyle]::Bold)
-$sepItem = $contextMenu.Items.Add("-")
-$exitItem = $contextMenu.Items.Add("Wyłącz")
-
-$openItem.add_Click({
-    [Console]::WriteLine("ACTION:OPEN")
-})
-
-$exitItem.add_Click({
-    [Console]::WriteLine("ACTION:EXIT")
-    $notify.Visible = $false
-    [System.Windows.Forms.Application]::Exit()
-})
-
-$notify.ContextMenuStrip = $contextMenu
-
-$notify.add_DoubleClick({
-    [Console]::WriteLine("ACTION:OPEN")
-})
-
-$notify.add_Click({
-    param($s, $e)
-    if ($e.Button -eq [System.Windows.Forms.MouseButtons]::Left) {
-        [Console]::WriteLine("ACTION:OPEN")
-    }
-})
-
-[System.Windows.Forms.Application]::Run()
-`;
-
-        this.trayProcess = spawn("powershell.exe", [
-            "-NoLogo",
-            "-NonInteractive",
-            "-NoProfile",
-            "-WindowStyle",
-            "Hidden",
-            "-ExecutionPolicy",
-            "Bypass",
-            "-Command",
-            psScript
-        ], {
-            stdio: ["ignore", "pipe", "ignore"],
-            windowsHide: true
-        });
-
-        if (this.trayProcess.stdout) {
-            let buffer = "";
-            this.trayProcess.stdout.on("data", (chunk: Buffer) => {
-                buffer += chunk.toString("utf8");
-                const lines = buffer.split(/\r?\n/);
-                buffer = lines.pop() || "";
-
-                for (const line of lines) {
-                    const trimmed = line.trim();
-                    if (trimmed === "ACTION:OPEN") {
-                        this.openAppWindow();
-                    } else if (trimmed === "ACTION:EXIT") {
-                        this.stop();
-                        if (this.onExitCallback) {
-                            this.onExitCallback();
-                        } else {
-                            process.exit(0);
+                    for (const line of lines) {
+                        const trimmed = line.trim();
+                        if (trimmed === "ACTION:OPEN") {
+                            this.openAppWindow();
+                        } else if (trimmed === "ACTION:EXIT") {
+                            this.stop();
+                            if (this.onExitCallback) {
+                                this.onExitCallback();
+                            } else {
+                                process.exit(0);
+                            }
                         }
                     }
-                }
-            });
-        }
+                });
+            }
+        } catch {}
     }
 
     public stop(): void {
@@ -134,8 +67,7 @@ $notify.add_Click({
                     "--window-size=1040,760"
                 ], {
                     detached: true,
-                    stdio: "ignore",
-                    windowsHide: true
+                    stdio: "ignore"
                 });
                 child.unref();
             } catch {
@@ -152,6 +84,24 @@ $notify.add_Click({
                 windowsHide: true
             }).unref();
         }
+    }
+
+    private resolveTrayBinary(): string | null {
+        const exeDir = path.dirname(process.execPath);
+        const candidates = [
+            path.join(process.cwd(), "LyricsTray.exe"),
+            path.join(exeDir, "LyricsTray.exe"),
+            path.join(exeDir, "build", "LyricsTray.exe"),
+            path.join(process.cwd(), "build", "LyricsTray.exe"),
+            path.join(__dirname, "LyricsTray.exe"),
+            path.join(__dirname, "../build", "LyricsTray.exe")
+        ];
+
+        for (const c of candidates) {
+            if (fs.existsSync(c)) return c;
+        }
+
+        return null;
     }
 
     private detectChromiumBrowser(): string | null {
