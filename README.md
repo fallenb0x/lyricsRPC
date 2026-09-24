@@ -66,13 +66,12 @@ Wymagany [Bun](https://bun.sh) lub [Node.js](https://nodejs.org).
 
 ---
 
-### Opcja 2: Gotowy plik `.exe`
+### Opcja 2: Gotowy plik `.exe` (Zalecane)
 
-1. Pobierz `LyricsRPC.exe` oraz folder `static` z zakładki [Releases](../../releases).
-2. Skopiuj `settings.example.json` jako `settings.json` w tym samym folderze.
-3. Wpisz swój `clientId` w pliku `settings.json` lub po uruchomieniu w panelu WebUI.
-4. Uruchom `LyricsRPC.exe`.
-5. Włącz muzykę na Spotify — tekst pojawi się na Twoim profilu Discord.
+1. Pobierz i wypakuj **`LyricsRPC-v1.0.0.zip`** z zakładki [Releases](../../releases).
+2. Uruchom **`LyricsRPC.exe`**.
+3. Włącz muzykę na Spotify — tekst natychmiast pojawi się na Twoim profilu Discord!
+4. Panel ustawień otworzy się automatycznie w przeglądarce pod adresem [http://localhost:8999](http://localhost:8999).
 
 ---
 

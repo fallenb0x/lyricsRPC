@@ -3,7 +3,7 @@
   "openBrowserOnStart": true,
   "minimizeToTray": true,
   "discord": {
-    "clientId": "YOUR_DISCORD_CLIENT_ID",
+    "clientId": "1504970968513122434",
     "enabled": true,
     "showTimestamps": true,
     "showAlbumArt": true,
