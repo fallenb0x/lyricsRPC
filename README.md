@@ -69,6 +69,12 @@ csc.exe /target:winexe /optimize+ /win32icon:"static/logo.ico" /out:"build/Lyric
 ```
 
 ---
+## Jak dodać do autostartu
+1. kliknij prawym przyciskiem myszy na LyricsRPC.exe
+2. kliknij utwórz skrót
+3. wciśnij win+r i wpisz **shell:startup**
+4. wrzuć do tego folderu skrót który utworzyłeś
+   tym oto sposobem program będzie uruchamiać się przy autostarcie automatycznie
 
 ## Konfiguracja
 
