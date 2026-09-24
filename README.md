@@ -28,6 +28,7 @@ Działa bezpośrednio przez Windows Media Session (SMTC) i Discord IPC — bez k
 - **Spotify** (wersja desktopowa)
 - **Discord** (wersja desktopowa)
 - Własna aplikacja w [Discord Developer Portal](https://discord.com/developers/applications) (potrzebny jest **Client ID**)
+- Więcej niż 10 IQ aby uruchomić program
 
 ---
 
